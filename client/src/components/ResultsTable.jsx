@@ -92,14 +92,14 @@ export default function ResultsTable({ results }) {
         <table className="results-table">
           <thead>
             <tr>
-              <th className="text-left">#</th>
+              <th className="text-left hidden sm:table-cell">#</th>
               <th className="text-left">Business</th>
-              <th className="text-left">Phone</th>
+              <th className="text-left hidden md:table-cell">Phone</th>
               <th className="text-left">Website</th>
               <th className="text-left">Email</th>
-              <th className="text-left">Rating</th>
-              <th className="text-left">Reviews</th>
-              <th className="text-left">Photos</th>
+              <th className="text-left hidden sm:table-cell">Rating</th>
+              <th className="text-left hidden md:table-cell">Reviews</th>
+              <th className="text-left hidden md:table-cell">Photos</th>
               <th className="text-left">Score &amp; Type</th>
             </tr>
           </thead>
@@ -111,10 +111,10 @@ export default function ResultsTable({ results }) {
                 style={{ animationDelay: `${Math.min(idx * 30, 500)}ms` }}
               >
                 {/* # */}
-                <td className="text-slate-600 text-xs font-mono w-8">{idx + 1}</td>
+                <td className="text-slate-600 text-xs font-mono w-8 hidden sm:table-cell">{idx + 1}</td>
 
                 {/* Business Name + Address */}
-                <td className="min-w-[180px] max-w-[220px]">
+                <td className="min-w-[150px] max-w-[200px]">
                   <div className="font-semibold text-slate-100 text-sm leading-tight">
                     {biz.googleMapsUri ? (
                       <a
@@ -137,41 +137,41 @@ export default function ResultsTable({ results }) {
                 </td>
 
                 {/* Phone */}
-                <td className="whitespace-nowrap">
+                <td className="whitespace-nowrap hidden md:table-cell">
                   <PhoneCell phone={biz.phone} />
                 </td>
 
                 {/* Website */}
-                <td className="max-w-[140px]">
+                <td className="max-w-[120px] truncate">
                   <WebsiteCell uri={biz.websiteUri} />
                 </td>
 
                 {/* Email */}
-                <td className="max-w-[180px]">
+                <td className="max-w-[150px] truncate">
                   <EmailCell email={biz.email} />
                 </td>
 
                 {/* Rating */}
-                <td>
+                <td className="hidden sm:table-cell">
                   <StarRating rating={biz.rating} />
                 </td>
 
                 {/* Reviews */}
-                <td className="text-slate-400 text-xs text-center">
+                <td className="text-slate-400 text-xs text-center hidden md:table-cell">
                   {biz.userRatingCount > 0 ? biz.userRatingCount.toLocaleString() : (
                     <span className="text-slate-600">—</span>
                   )}
                 </td>
 
                 {/* Photos */}
-                <td className="text-slate-400 text-xs text-center">
+                <td className="text-slate-400 text-xs text-center hidden md:table-cell">
                   <span className={biz.photoCount < 3 ? "text-amber-500 font-semibold" : "text-slate-400"}>
                     {biz.photoCount}
                   </span>
                 </td>
 
                 {/* Score + Badge */}
-                <td className="min-w-[160px]">
+                <td className="min-w-[130px]">
                   <LeadBadge
                     score={biz.leadScore}
                     label={biz.leadLabel}

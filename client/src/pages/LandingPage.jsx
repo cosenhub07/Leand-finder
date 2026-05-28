@@ -19,10 +19,18 @@ export default function LandingPage({ onLaunch }) {
 
   // Automatic mock searching simulation on load
   useEffect(() => {
-    let t1, t2, t3;
+    let typingInterval;
+    let t1, t2;
+    let t3Timers = [];
     
     function runSimulation() {
-      // Step 1: Type query
+      // Clear all active timers to prevent overlapping runs
+      clearInterval(typingInterval);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      t3Timers.forEach(clearTimeout);
+      t3Timers = [];
+      
       setMockInput("");
       setVisibleMockResults([]);
       setMockSearchStep(1);
@@ -30,9 +38,12 @@ export default function LandingPage({ onLaunch }) {
       const query = "Restaurants in Mumbai";
       let charIdx = 0;
       
-      const typingInterval = setInterval(() => {
+      typingInterval = setInterval(() => {
         if (charIdx < query.length) {
-          setMockInput((prev) => prev + query[charIdx]);
+          const nextChar = query[charIdx];
+          if (nextChar !== undefined) {
+            setMockInput((prev) => prev + nextChar);
+          }
           charIdx++;
         } else {
           clearInterval(typingInterval);
@@ -48,9 +59,10 @@ export default function LandingPage({ onLaunch }) {
               setMockSearchStep(3);
               
               MOCK_RESULTS.forEach((res, index) => {
-                t3 = setTimeout(() => {
+                const timer = setTimeout(() => {
                   setVisibleMockResults((prev) => [...prev, res]);
                 }, index * 350);
+                t3Timers.push(timer);
               });
             }, 1200);
             
@@ -65,10 +77,11 @@ export default function LandingPage({ onLaunch }) {
     const loopInterval = setInterval(runSimulation, 10000);
     
     return () => {
+      clearInterval(typingInterval);
+      clearInterval(loopInterval);
       clearTimeout(t1);
       clearTimeout(t2);
-      clearTimeout(t3);
-      clearInterval(loopInterval);
+      t3Timers.forEach(clearTimeout);
     };
   }, []);
 

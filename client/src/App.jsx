@@ -273,7 +273,6 @@ export default function App() {
                 emailProgress={emailProgress}
                 isExtracting={isExtracting}
               />
-              <ExportButton results={filteredResults} />
             </div>
             <ResultsTable results={filteredResults} />
           </>
