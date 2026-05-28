@@ -163,7 +163,7 @@ export default function LandingPage({ onLaunch }) {
             <div className="landing-mock-search">
               <div className="mock-input">
                 🔍 {mockInput || <span style={{ color: "#334155" }}>Restaurants in Mumbai</span>}
-                {mockSearchStep === 1 && <span className="auth-spinner small" style={{ marginLeft: 6 }} />}
+                {mockSearchStep === 1 && <span className="typing-cursor">|</span>}
               </div>
               <button className="mock-search-btn" disabled>
                 {isMockSearching ? "Scanning..." : "Search"}

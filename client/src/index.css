@@ -1594,3 +1594,16 @@ body {
   }
 }
 
+.typing-cursor {
+  animation: blinkCaret 0.75s step-end infinite;
+  color: var(--primary-light);
+  font-weight: 500;
+  font-size: 16px;
+  margin-left: 2px;
+}
+
+@keyframes blinkCaret {
+  from, to { color: transparent }
+  50% { color: var(--primary-light); }
+}
+
