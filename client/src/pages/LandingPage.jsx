@@ -17,6 +17,40 @@ export default function LandingPage({ onLaunch }) {
   const [visibleMockResults, setVisibleMockResults] = useState([]);
   const [mockSearchStep, setMockSearchStep] = useState(0); // 0: Idle, 1: Typing, 2: Searching, 3: Completed
 
+  // Interactive ROI Calculator State
+  const [roiLeads, setRoiLeads] = useState(1200);
+
+  // Interactive Scoring Simulator States
+  const [scoreFactors, setScoreFactors] = useState({
+    noWebsite: true,
+    lowRating: true,
+    fewReviews: false,
+    fewPhotos: true,
+    noPhone: false,
+    noHours: false
+  });
+
+  // Calculate simulated score dynamically
+  const calculatedScore = (scoreFactors.noWebsite ? 25 : 0) +
+                           (scoreFactors.lowRating ? 20 : 0) +
+                           (scoreFactors.fewReviews ? 20 : 0) +
+                           (scoreFactors.fewPhotos ? 15 : 0) +
+                           (scoreFactors.noPhone ? 10 : 0) +
+                           (scoreFactors.noHours ? 10 : 0);
+
+  let leadLabel = "❄️ Cold Lead";
+  let labelClass = "cold";
+  if (calculatedScore >= 60) {
+    leadLabel = "🔥 Hot Lead";
+    labelClass = "hot";
+  } else if (calculatedScore >= 35) {
+    leadLabel = "⚡ Warm Lead";
+    labelClass = "warm";
+  }
+
+  // Pitch copy clipboard state
+  const [isCopied, setIsCopied] = useState(false);
+
   // Automatic mock searching simulation on load
   useEffect(() => {
     let typingInterval;
@@ -87,6 +121,21 @@ export default function LandingPage({ onLaunch }) {
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
+  };
+
+  const handleCopyPitch = () => {
+    const text = `Subject: Quick question about Saffron Spice Restaurant's online presence...
+
+Hi Team,
+
+I noticed you have over 50 great reviews on Google Maps but don't have a website listed under your profile.
+
+In today's market, 72% of customers search for a local menu/booking page before visiting. By adding a sleek, fast-loading website and booking funnel, we could help you capture another 15-20 clients per week.
+
+Let me know if you'd be open to a quick 5-minute call to see a mock design I drew for your brand!`;
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -212,6 +261,127 @@ export default function LandingPage({ onLaunch }) {
         </div>
       </section>
 
+      {/* ── NEW: Interactive Lead Scorer Simulator ────────────────────────── */}
+      <section className="landing-waterfall-section" style={{ background: "rgba(99, 102, 241, 0.01)" }}>
+        <h2 className="section-title">How Our Lead Scoring Algorithm Works</h2>
+        <p className="section-desc">
+          We rate every business out of 100 points based on their sales vulnerability. Toggle the checkmarks below to simulate our scoring logic in real time!
+        </p>
+
+        <div className="roi-container" style={{ maxWidth: 980 }}>
+          {/* Scoring Factors Checklist */}
+          <div className="roi-pitch">
+            <h3 style={{ fontSize: 20, marginBottom: 20 }}>Select Missing Elements:</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+                <input
+                  type="checkbox"
+                  checked={scoreFactors.noWebsite}
+                  onChange={(e) => setScoreFactors(prev => ({ ...prev, noWebsite: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                />
+                🌐 Website is Missing (+25 Pts)
+              </label>
+              
+              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+                <input
+                  type="checkbox"
+                  checked={scoreFactors.lowRating}
+                  onChange={(e) => setScoreFactors(prev => ({ ...prev, lowRating: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                />
+                ⭐ Google Rating is Low/Empty (+20 Pts)
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+                <input
+                  type="checkbox"
+                  checked={scoreFactors.fewReviews}
+                  onChange={(e) => setScoreFactors(prev => ({ ...prev, fewReviews: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                />
+                💬 Less than 5 Google Reviews (+20 Pts)
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+                <input
+                  type="checkbox"
+                  checked={scoreFactors.fewPhotos}
+                  onChange={(e) => setScoreFactors(prev => ({ ...prev, fewPhotos: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                />
+                📸 Less than 3 Google Photos (+15 Pts)
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+                <input
+                  type="checkbox"
+                  checked={scoreFactors.noPhone}
+                  onChange={(e) => setScoreFactors(prev => ({ ...prev, noPhone: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                />
+                📞 No Phone Number listed (+10 Pts)
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+                <input
+                  type="checkbox"
+                  checked={scoreFactors.noHours}
+                  onChange={(e) => setScoreFactors(prev => ({ ...prev, noHours: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                />
+                🕐 No Business Hours listed (+10 Pts)
+              </label>
+            </div>
+          </div>
+
+          {/* Glowing Animated Score Visualizer Card */}
+          <div style={{
+            background: "rgba(15, 23, 42, 0.8)",
+            border: "1px solid rgba(99, 102, 241, 0.25)",
+            borderRadius: 20,
+            padding: 40,
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            boxShadow: "0 10px 40px rgba(99, 102, 241, 0.1)"
+          }}>
+            <h4 style={{ textTransform: "uppercase", fontSize: 11, color: "#64748b", letterSpacing: 1.5, marginBottom: 15 }}>
+              Live Score Breakdown
+            </h4>
+
+            {/* Glowing Ring */}
+            <div style={{
+              width: 140,
+              height: 140,
+              borderRadius: "50%",
+              border: `6px solid ${calculatedScore >= 60 ? "#f97316" : calculatedScore >= 35 ? "#f59e0b" : "#60a5fa"}`,
+              boxShadow: `0 0 25px ${calculatedScore >= 60 ? "rgba(249,115,22,0.25)" : calculatedScore >= 35 ? "rgba(245,158,11,0.2)" : "rgba(96,165,250,0.15)"}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 48,
+              fontWeight: 900,
+              color: "white",
+              fontFamily: "'Outfit', sans-serif",
+              marginBottom: 20,
+              transition: "all 0.3s"
+            }}>
+              {calculatedScore}
+            </div>
+
+            <span className={`roi-tag ${labelClass}`} style={{ fontSize: 13, padding: "4px 14px", borderRadius: 6, fontWeight: 700 }}>
+              {leadLabel}
+            </span>
+
+            <p style={{ fontSize: 12, color: "#64748b", marginTop: 15, lineHeight: 1.4 }}>
+              Businesses with higher scores are perfect cold-outreach candidates. They need websites, marketing, and reputation management immediately.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── Feature Cards (4-Step Waterfall) ─────────────────────────────── */}
       <section className="landing-waterfall-section">
         <h2 className="section-title">The 4-Step Waterfall Pipeline</h2>
@@ -254,6 +424,94 @@ export default function LandingPage({ onLaunch }) {
             <p className="card-desc">
               Runs a headless browser in the background for modern JavaScript-heavy sites (React, Wix, Squarespace) to capture dynamically loaded contact details.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── NEW: Interactive Outreach Template Mockup ───────────────────── */}
+      <section className="landing-roi-section">
+        <h2 className="section-title">Personalized Cold Outreach in Seconds</h2>
+        <p className="section-desc">
+          Copy our battle-tested, high-converting agency cold email template. Optimized specifically for pitching found leads.
+        </p>
+
+        <div className="landing-live-preview" style={{ maxWidth: 850, padding: 0, border: "1px solid rgba(255,255,255,0.06)" }}>
+          {/* Mock Client Top */}
+          <div style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 12, color: "#64748b" }}>To: <strong>info@saffronspice.in</strong> (Saffron Spice Restaurant)</span>
+            <button
+              onClick={handleCopyPitch}
+              style={{
+                background: isCopied ? "#10b981" : "rgba(99, 102, 241, 0.15)",
+                border: `1px solid ${isCopied ? "#10b981" : "rgba(99, 102, 241, 0.3)"}`,
+                color: isCopied ? "white" : "#818cf8",
+                fontSize: 11,
+                padding: "5px 12px",
+                borderRadius: 6,
+                cursor: "pointer",
+                fontWeight: 700,
+                transition: "all 0.2s"
+              }}
+            >
+              {isCopied ? "✓ Copied!" : "📋 Copy Outreach Email"}
+            </button>
+          </div>
+
+          {/* Email Text */}
+          <div style={{ padding: 24, fontFamily: "monospace", fontSize: 13, color: "#94a3b8", lineHeight: 1.6, background: "#090a12" }}>
+            <span style={{ color: "#818cf8" }}>Subject: Quick question about Saffron Spice Restaurant's online presence...</span><br /><br />
+            Hi Team, 👋<br /><br />
+            I noticed you have over 50 great reviews on Google Maps but don't have a website listed under your profile.<br /><br />
+            In today's market, 72% of customers search for a local menu/booking page before visiting. By adding a sleek, fast-loading website and booking funnel, we could help you capture another 15-20 clients per week.<br /><br />
+            Let me know if you'd be open to a quick 5-minute call to see a mock design I drew for your brand!
+          </div>
+        </div>
+      </section>
+
+      {/* ── NEW: Interactive ROI Savings Calculator ─────────────────────── */}
+      <section className="landing-waterfall-section" style={{ background: "rgba(99,102,241,0.01)" }}>
+        <h2 className="section-title">ROI &amp; Time Savings Calculator</h2>
+        <p className="section-desc">
+          How much time and money does your agency save using Lead Finder PRO? Drag the slider to calculate your savings!
+        </p>
+
+        <div className="glass-card p-6" style={{ maxWidth: 650, width: "100%", textAlign: "center" }}>
+          <div style={{ marginBottom: 25 }}>
+            <label style={{ fontSize: 14, color: "#94a3b8", display: "block", marginBottom: 10 }}>
+              Leads Needed Per Month: <strong>{roiLeads}</strong>
+            </label>
+            <input
+              type="range"
+              min="100"
+              max="5000"
+              step="100"
+              value={roiLeads}
+              onChange={(e) => setRoiLeads(parseInt(e.target.value))}
+              style={{ width: "100%", accentColor: "#f97316", cursor: "pointer" }}
+            />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 15 }}>
+            <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, padding: 15 }}>
+              <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Time Saved</span>
+              <p style={{ fontSize: 20, fontWeight: 800, color: "#818cf8", fontFamily: "Outfit", marginTop: 4 }}>
+                {Math.round((roiLeads * 5) / 60)} hrs
+              </p>
+            </div>
+            
+            <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, padding: 15 }}>
+              <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Manual Cost Saved</span>
+              <p style={{ fontSize: 20, fontWeight: 800, color: "#f97316", fontFamily: "Outfit", marginTop: 4 }}>
+                ₹{(roiLeads * 12).toLocaleString()}
+              </p>
+            </div>
+
+            <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, padding: 15 }}>
+              <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Emails Found</span>
+              <p style={{ fontSize: 20, fontWeight: 800, color: "#10b981", fontFamily: "Outfit", marginTop: 4 }}>
+                ~{Math.round(roiLeads * 0.58)} leads
+              </p>
+            </div>
           </div>
         </div>
       </section>
