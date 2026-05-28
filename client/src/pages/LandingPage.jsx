@@ -27,7 +27,7 @@ export default function LandingPage({ onLaunch }) {
       setVisibleMockResults([]);
       setMockSearchStep(1);
       
-      const query = "Gyms in Bhopal";
+      const query = "Restaurants in Mumbai";
       let charIdx = 0;
       
       const typingInterval = setInterval(() => {
@@ -50,19 +50,19 @@ export default function LandingPage({ onLaunch }) {
               MOCK_RESULTS.forEach((res, index) => {
                 t3 = setTimeout(() => {
                   setVisibleMockResults((prev) => [...prev, res]);
-                }, index * 600);
+                }, index * 350);
               });
-            }, 1800);
+            }, 1200);
             
-          }, 800);
+          }, 400);
         }
-      }, 90);
+      }, 50);
     }
     
     runSimulation();
     
-    // Loop the simulation every 15 seconds to keep the landing page alive
-    const loopInterval = setInterval(runSimulation, 15000);
+    // Loop the simulation every 10 seconds to keep the landing page alive and dynamic
+    const loopInterval = setInterval(runSimulation, 10000);
     
     return () => {
       clearTimeout(t1);
@@ -149,7 +149,7 @@ export default function LandingPage({ onLaunch }) {
             {/* Mock Search Bar */}
             <div className="landing-mock-search">
               <div className="mock-input">
-                🔍 {mockInput || <span style={{ color: "#334155" }}>Gyms in Bhopal</span>}
+                🔍 {mockInput || <span style={{ color: "#334155" }}>Restaurants in Mumbai</span>}
                 {mockSearchStep === 1 && <span className="auth-spinner small" style={{ marginLeft: 6 }} />}
               </div>
               <button className="mock-search-btn" disabled>
