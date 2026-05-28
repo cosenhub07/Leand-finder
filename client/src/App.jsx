@@ -9,6 +9,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
+import LandingPage from "./pages/LandingPage";
 import SearchForm from "./components/SearchForm";
 import FilterBar from "./components/FilterBar";
 import ResultsTable from "./components/ResultsTable";
@@ -19,6 +20,7 @@ export default function App() {
   const { user, token, logout, authLoading } = useAuth();
 
   // ── Core State ──────────────────────────────────────────────────────────────
+  const [publicView,    setPublicView]    = useState("landing"); // "landing" | "auth"
   const [results,       setResults]       = useState([]);
   const [isSearching,   setIsSearching]   = useState(false);
   const [isExtracting,  setIsExtracting]  = useState(false);
@@ -50,8 +52,13 @@ export default function App() {
     );
   }
 
-  // ── Show auth page if not logged in ─────────────────────────────────────────
-  if (!user) return <AuthPage />;
+  // ── Show auth page or landing page if not logged in ─────────────────────────
+  if (!user) {
+    if (publicView === "landing") {
+      return <LandingPage onLaunch={() => setPublicView("auth")} />;
+    }
+    return <AuthPage onBack={() => setPublicView("landing")} />;
+  }
 
   // ── Auto-save search to Supabase ─────────────────────────────────────────────
   async function saveToHistory(query, location, businessType, maxResults, finalResults) {

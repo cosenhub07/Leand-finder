@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const STEPS = { EMAIL: "email", OTP: "otp" };
 
-export default function AuthPage() {
+export default function AuthPage({ onBack }) {
   const { login }      = useAuth();
   const [step,  setStep]  = useState(STEPS.EMAIL);
   const [email, setEmail] = useState("");
@@ -117,6 +117,16 @@ export default function AuthPage() {
                 <>📧 Send OTP to Email</>
               )}
             </button>
+            {onBack && (
+              <button
+                type="button"
+                className="auth-btn-ghost"
+                style={{ marginTop: 10, width: "100%" }}
+                onClick={onBack}
+              >
+                ← Back to Homepage
+              </button>
+            )}
           </form>
         )}
 
