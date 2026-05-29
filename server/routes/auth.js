@@ -17,7 +17,7 @@ const JWT_SECRET     = "lf_jwt_secret_2026_x9k2m7p";
 const BREVO_KEY      = process.env.BREVO_API_KEY || "";
 const BREVO_API_URL  = "https://api.brevo.com/v3/smtp/email";
 // IMPORTANT: this must be a verified sender in your Brevo account
-const BREVO_SENDER_EMAIL = "ankitrajput0789@gmail.com";
+const BREVO_SENDER_EMAIL = "cosen.hub@gmail.com";
 const OTP_EXPIRY_MIN     = 10;
 
 // ── Helper: send OTP email via Brevo REST API ─────────────────────────────────
