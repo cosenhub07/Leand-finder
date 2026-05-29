@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 const STEPS = { EMAIL: "email", OTP: "otp" };
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 export default function AuthPage({ onBack }) {
   const { login }      = useAuth();
@@ -10,10 +11,62 @@ export default function AuthPage({ onBack }) {
   const [email, setEmail] = useState("");
   const [name,  setName]  = useState("");
   const [otp,   setOtp]   = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState("");
-  const [info,    setInfo]    = useState("");
+  const [loading, setLoading]     = useState(false);
+  const [gLoading, setGLoading]   = useState(false);
+  const [error,   setError]       = useState("");
+  const [info,    setInfo]        = useState("");
 
+  // ── Google OAuth handler ───────────────────────────────────────────────────
+  const handleGoogleResponse = useCallback(async (response) => {
+    setGLoading(true);
+    setError("");
+    try {
+      const { data } = await axios.post("/api/auth/google", {
+        credential: response.credential,
+      });
+      login(data.token, data.user);
+    } catch (err) {
+      setError(err.response?.data?.error || "Google sign-in failed. Try again.");
+    } finally {
+      setGLoading(false);
+    }
+  }, [login]);
+
+  // ── Initialize Google Identity Services ────────────────────────────────────
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID) return; // skip if no client ID configured
+    const initGoogle = () => {
+      if (!window.google) return;
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("google-signin-btn"),
+        {
+          theme: "filled_black",
+          size: "large",
+          shape: "pill",
+          text: "continue_with",
+          width: 340,
+        }
+      );
+    };
+
+    // Wait for Google script to load
+    if (window.google) {
+      initGoogle();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google) { initGoogle(); clearInterval(interval); }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [handleGoogleResponse]);
+
+  // ── OTP flow ───────────────────────────────────────────────────────────────
   async function handleSendOtp(e) {
     e.preventDefault();
     if (!email.trim() || !name.trim()) {
@@ -65,6 +118,31 @@ export default function AuthPage({ onBack }) {
         </div>
 
         <div className="auth-divider" />
+
+        {/* ── Google Sign-In Button ───────────────────────────────────────── */}
+        {GOOGLE_CLIENT_ID ? (
+          <div className="auth-google-section">
+            {gLoading ? (
+              <div className="auth-google-loading">
+                <span className="auth-spinner" />
+                <span>Signing in with Google...</span>
+              </div>
+            ) : (
+              <div id="google-signin-btn" className="auth-google-btn-wrapper" />
+            )}
+          </div>
+        ) : (
+          <div className="auth-google-missing">
+            <span>⚠️ Google login not configured</span>
+          </div>
+        )}
+
+        {/* ── OR Divider ─────────────────────────────────────────────────── */}
+        <div className="auth-or-divider">
+          <span className="auth-or-line" />
+          <span className="auth-or-text">or continue with email</span>
+          <span className="auth-or-line" />
+        </div>
 
         {/* Step indicator */}
         <div className="auth-steps">
@@ -169,7 +247,7 @@ export default function AuthPage({ onBack }) {
         )}
 
         <p className="auth-footer">
-          🔒 Secure OTP login · No password needed
+          🔒 Secure login · OTP or Google · No password needed
         </p>
       </div>
     </div>
