@@ -1451,7 +1451,7 @@ body {
 
 .landing-mock-results {
   padding: 16px;
-  max-height: 280px;
+  height: 380px;
   overflow: hidden;
   position: relative;
 }
@@ -1809,6 +1809,9 @@ body {
   .landing-mock-search {
     flex-direction: column;
     padding: 14px;
+  }
+  .landing-mock-results {
+    height: 520px;
   }
   .mock-address-bar {
     display: none;
