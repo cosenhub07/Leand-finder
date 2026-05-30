@@ -97,8 +97,8 @@ export default function ResultsTable({ results }) {
               <th className="text-left hidden md:table-cell">Phone</th>
               <th className="text-left">Website</th>
               <th className="text-left">Email</th>
-              <th className="text-left hidden sm:table-cell">Rating</th>
-              <th className="text-left hidden md:table-cell">Reviews</th>
+              <th className="text-left">Rating</th>
+              <th className="text-left text-center">Reviews</th>
               <th className="text-left hidden md:table-cell">Photos</th>
               <th className="text-left">Score &amp; Type</th>
             </tr>
@@ -152,12 +152,12 @@ export default function ResultsTable({ results }) {
                 </td>
 
                 {/* Rating */}
-                <td className="hidden sm:table-cell">
+                <td>
                   <StarRating rating={biz.rating} />
                 </td>
 
                 {/* Reviews */}
-                <td className="text-slate-400 text-xs text-center hidden md:table-cell">
+                <td className="text-slate-400 text-xs text-center">
                   {biz.userRatingCount > 0 ? biz.userRatingCount.toLocaleString() : (
                     <span className="text-slate-600">—</span>
                   )}
