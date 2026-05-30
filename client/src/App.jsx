@@ -58,26 +58,6 @@ export default function App() {
   // ref to latest results for auto-save after extraction completes
   const resultsRef = useRef([]);
 
-  // ── Auth guard loading splash ────────────────────────────────────────────────
-  if (authLoading) {
-    return (
-      <div className="auth-page">
-        <div className="auth-blob blob-1" /><div className="auth-blob blob-2" />
-        <div style={{ color: "#818cf8", fontSize: 18, fontWeight: 600 }}>
-          <span className="auth-spinner" style={{ marginRight: 10 }} />
-          Loading Lead Finder...
-        </div>
-      </div>
-    );
-  }
-
-  // ── Show auth page or landing page if not logged in ─────────────────────────
-  if (!user) {
-    if (publicView === "landing") {
-      return <LandingPage onLaunch={() => setPublicView("auth")} />;
-    }
-    return <AuthPage onBack={() => setPublicView("landing")} />;
-  }
 
   // ── Auto-save search to Supabase ─────────────────────────────────────────────
   async function saveToHistory(query, location, businessType, maxResults, finalResults) {
@@ -199,6 +179,25 @@ export default function App() {
   }), [results, activeFilter, noWebsiteOnly, lowRatingOnly, hasEmailOnly]);
 
   // ── Render ───────────────────────────────────────────────────────────────
+  if (authLoading) {
+    return (
+      <div className="auth-page">
+        <div className="auth-blob blob-1" /><div className="auth-blob blob-2" />
+        <div style={{ color: "#818cf8", fontSize: 18, fontWeight: 600 }}>
+          <span className="auth-spinner" style={{ marginRight: 10 }} />
+          Loading Lead Finder...
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    if (publicView === "landing") {
+      return <LandingPage onLaunch={() => setPublicView("auth")} />;
+    }
+    return <AuthPage onBack={() => setPublicView("landing")} />;
+  }
+
   return (
     <ErrorBoundary>
     <div className="app-root">
