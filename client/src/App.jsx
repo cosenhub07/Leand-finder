@@ -5,7 +5,7 @@
  * Shows HistoryPanel for past searches.
  */
 
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, Component } from "react";
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
@@ -15,6 +15,25 @@ import FilterBar from "./components/FilterBar";
 import ResultsTable from "./components/ResultsTable";
 import ExportButton from "./components/ExportButton";
 import HistoryPanel from "./components/HistoryPanel";
+
+// ── Error Boundary to catch dashboard crashes ────────────────────────────────
+class ErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0f0f1a", color: "#e2e8f0", gap: 16, padding: 24 }}>
+          <div style={{ fontSize: 48 }}>⚠️</div>
+          <h2 style={{ color: "#818cf8", margin: 0 }}>Something went wrong</h2>
+          <p style={{ color: "#94a3b8", maxWidth: 400, textAlign: "center" }}>{this.state.error?.message || "An unexpected error occurred."}</p>
+          <button onClick={() => { this.setState({ hasError: false }); window.location.reload(); }} style={{ background: "#6366f1", color: "white", border: "none", padding: "10px 24px", borderRadius: 8, cursor: "pointer", fontSize: 14 }}>Reload App</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const { user, token, logout, authLoading } = useAuth();
@@ -179,8 +198,9 @@ export default function App() {
     return true;
   }), [results, activeFilter, noWebsiteOnly, lowRatingOnly, hasEmailOnly]);
 
-  // ── Render ───────────────────────────────────────────────────────────────────
+  // ── Render ───────────────────────────────────────────────────────────────
   return (
+    <ErrorBoundary>
     <div className="app-root">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header className="app-header">
@@ -203,8 +223,8 @@ export default function App() {
               📂 History
             </button>
             <div className="user-badge">
-              <span className="user-avatar">{(user.name || user.email)[0].toUpperCase()}</span>
-              <span className="user-name">{user.name || user.email}</span>
+              <span className="user-avatar">{((user.name || user.email || "U")[0] || "U").toUpperCase()}</span>
+              <span className="user-name">{user.name || user.email || "User"}</span>
               <button className="logout-btn" onClick={logout} title="Logout">↩</button>
             </div>
           </div>
@@ -304,5 +324,6 @@ export default function App() {
         Lead Finder PRO · Google Places API · Supabase · Made for Indian Marketing Agencies 🇮🇳
       </footer>
     </div>
+    </ErrorBoundary>
   );
 }

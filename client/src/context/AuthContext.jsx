@@ -8,12 +8,17 @@ export function AuthProvider({ children }) {
   const [token,        setToken]        = useState(() => localStorage.getItem("lf_token"));
   const [authLoading,  setAuthLoading]  = useState(true);
 
-  // Verify token on load
+  // Verify token on load (and after login)
   useEffect(() => {
     if (!token) { setAuthLoading(false); return; }
+    setAuthLoading(true);
     axios.get("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => setUser(r.data.user))
-      .catch(() => { localStorage.removeItem("lf_token"); setToken(null); })
+      .catch(() => {
+        localStorage.removeItem("lf_token");
+        setToken(null);
+        setUser(null);
+      })
       .finally(() => setAuthLoading(false));
   }, [token]);
 
