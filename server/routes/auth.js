@@ -104,12 +104,16 @@ router.post("/send-otp", async (req, res) => {
 
   // Send email via Brevo
   try {
+    console.log(`[auth/send-otp] Attempting to send OTP to: ${email}`);
+    console.log(`[auth/send-otp] Using sender: ${BREVO_SENDER_EMAIL}`);
+    console.log(`[auth/send-otp] Brevo API key present: ${BREVO_KEY ? "YES (" + BREVO_KEY.substring(0, 12) + "...)" : "NO - MISSING!"}`);
     await sendOtpEmail(email, name, otp);
-    console.log(`[auth/send-otp] OTP sent to ${email}`);
+    console.log(`[auth/send-otp] ✅ OTP sent successfully to ${email}`);
     return res.json({ success: true, message: `OTP sent to ${email}` });
   } catch (err) {
     const detail = err.response?.data || err.message;
-    console.error("[auth/send-otp] Brevo error:", detail);
+    const status = err.response?.status;
+    console.error(`[auth/send-otp] ❌ Brevo error (HTTP ${status}):`, JSON.stringify(detail));
     return res.status(500).json({
       error: "Failed to send OTP email.",
       detail: typeof detail === "object" ? JSON.stringify(detail) : detail,
