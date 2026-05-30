@@ -9,6 +9,7 @@
 const express  = require("express");
 const jwt      = require("jsonwebtoken");
 const axios    = require("axios");
+const bcrypt   = require("bcryptjs");
 const { OAuth2Client } = require("google-auth-library");
 const supabase = require("../lib/supabase");
 
@@ -246,6 +247,156 @@ router.post("/google", async (req, res) => {
   } catch (err) {
     console.error("[auth/google] Verification error:", err.message);
     return res.status(401).json({ error: "Invalid Google token. Please try again." });
+  }
+});
+
+// ── POST /api/auth/signup ─────────────────────────────────────────────────────
+router.post("/signup", async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: "Name, email, and password are required" });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ error: "Password must be at least 8 characters" });
+  }
+
+  // Check if user exists
+  const { data: existingUser } = await supabase
+    .from("lf_users")
+    .select("id")
+    .eq("email", email.toLowerCase())
+    .single();
+
+  if (existingUser) {
+    return res.status(400).json({ error: "Email is already registered. Please sign in." });
+  }
+
+  try {
+    const password_hash = await bcrypt.hash(password, 12);
+    
+    // Insert user
+    const { data: users, error: insertErr } = await supabase
+      .from("lf_users")
+      .insert({ 
+        email: email.toLowerCase(), 
+        name, 
+        password_hash,
+        last_login: new Date().toISOString() 
+      })
+      .select();
+
+    if (insertErr) {
+      console.error("[auth/signup] Insert error:", insertErr.message);
+      return res.status(500).json({ error: "Failed to create account" });
+    }
+
+    const user = users[0];
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, name: user.name },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.json({ success: true, token, user: { id: user.id, email: user.email, name: user.name } });
+  } catch (err) {
+    console.error("[auth/signup] Error:", err.message);
+    return res.status(500).json({ error: "Internal server error during signup" });
+  }
+});
+
+// ── POST /api/auth/login ──────────────────────────────────────────────────────
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  const { data: user, error } = await supabase
+    .from("lf_users")
+    .select("*")
+    .eq("email", email.toLowerCase())
+    .single();
+
+  if (error || !user) {
+    return res.status(401).json({ error: "Invalid email or password" });
+  }
+
+  if (!user.password_hash) {
+    return res.status(401).json({ error: "Please sign in with Google or use 'Forgot password' to set a password." });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password_hash);
+  if (!isMatch) {
+    return res.status(401).json({ error: "Invalid email or password" });
+  }
+
+  // Update last login
+  await supabase.from("lf_users").update({ last_login: new Date().toISOString() }).eq("id", user.id);
+
+  const token = jwt.sign(
+    { userId: user.id, email: user.email, name: user.name },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  return res.json({ success: true, token, user: { id: user.id, email: user.email, name: user.name } });
+});
+
+// ── POST /api/auth/verify-otp-only ────────────────────────────────────────────
+// Verifies OTP without logging the user in (used for password reset flow)
+router.post("/verify-otp-only", async (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Email and OTP are required" });
+  }
+
+  const { data: codes, error } = await supabase
+    .from("lf_otp_codes")
+    .select("*")
+    .eq("email", email.toLowerCase())
+    .eq("code", String(otp).trim())
+    .eq("used", false)
+    .gte("expires_at", new Date().toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (error || !codes || codes.length === 0) {
+    return res.status(401).json({ error: "Invalid or expired OTP. Please try again." });
+  }
+
+  // Mark as used
+  await supabase.from("lf_otp_codes").update({ used: true }).eq("id", codes[0].id);
+
+  return res.json({ success: true, message: "OTP verified" });
+});
+
+// ── POST /api/auth/reset-password ─────────────────────────────────────────────
+router.post("/reset-password", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password || password.length < 8) {
+    return res.status(400).json({ error: "Valid email and password (min 8 chars) are required" });
+  }
+
+  try {
+    const password_hash = await bcrypt.hash(password, 12);
+    
+    // Upsert so if user didn't exist before, they do now
+    const { error: upsertErr } = await supabase
+      .from("lf_users")
+      .upsert(
+        { email: email.toLowerCase(), password_hash },
+        { onConflict: "email" }
+      );
+
+    if (upsertErr) {
+      console.error("[auth/reset-password] Upsert error:", upsertErr.message);
+      return res.status(500).json({ error: "Failed to reset password" });
+    }
+
+    return res.json({ success: true, message: "Password updated successfully" });
+  } catch (err) {
+    console.error("[auth/reset-password] Error:", err.message);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
