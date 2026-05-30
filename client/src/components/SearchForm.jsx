@@ -29,12 +29,12 @@ const BUSINESS_TYPES = [
   "Chartered Accountants",
 ];
 
-export default function SearchForm({ onSearch, isLoading }) {
+export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
   const [location, setLocation]         = useState("");
   const [businessType, setBusinessType] = useState(BUSINESS_TYPES[0]);
   const [customType, setCustomType]     = useState("");
   const [isCustom, setIsCustom]         = useState(false);
-  const [maxResults, setMaxResults]     = useState("60");
+  const [maxResults, setMaxResults]     = useState(tierLimit.toString());
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -153,10 +153,10 @@ export default function SearchForm({ onSearch, isLoading }) {
             onChange={(e) => setMaxResults(e.target.value)}
           >
             <option value="20">20</option>
-            <option value="60">60</option>
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="500">500</option>
+            <option value="60" disabled={tierLimit < 60}>60 {tierLimit < 60 ? "🔒" : ""}</option>
+            <option value="100" disabled={tierLimit < 100}>100 {tierLimit < 100 ? "🔒" : ""}</option>
+            <option value="200" disabled={tierLimit < 200}>200 {tierLimit < 200 ? "🔒" : ""}</option>
+            <option value="500" disabled={tierLimit < 500}>500 {tierLimit < 500 ? "🔒" : ""}</option>
           </select>
           <span className="text-xs text-slate-600">businesses</span>
         </div>

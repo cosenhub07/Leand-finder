@@ -9,8 +9,21 @@ const express = require("express");
 const axios = require("axios");
 const { scoreLead } = require("../utils/leadScorer");
 const { extractEmailsParallel } = require("../utils/emailExtractor");
+const supabase = require("../lib/supabase");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("./auth");
 
 const router = express.Router();
+
+function getUser(req) {
+  try {
+    const auth = req.headers.authorization || "";
+    if (!auth.startsWith("Bearer ")) return null;
+    return jwt.verify(auth.slice(7), JWT_SECRET);
+  } catch {
+    return null;
+  }
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -89,11 +102,11 @@ function normalizePlace(raw, searchLocation) {
 
 // ── Helpers: paginated fetch for one search area ─────────────────────────────
 
-async function fetchOnePage(body) {
+async function fetchOnePage(body, apiKey) {
   const response = await axios.post(PLACES_SEARCH_URL, body, {
     headers: {
       "Content-Type":    "application/json",
-      "X-Goog-Api-Key":  GOOGLE_API_KEY,
+      "X-Goog-Api-Key":  apiKey,
       "X-Goog-FieldMask": SEARCH_FIELD_MASK,
     },
     timeout: 15000,
@@ -108,7 +121,7 @@ async function fetchOnePage(body) {
  * Fetches all pages (max 60 results) for a single search body.
  * Pages are fetched sequentially because each page needs the previous nextPageToken.
  */
-async function fetchAllPages(body) {
+async function fetchAllPages(body, apiKey) {
   let allPlaces = [];
   let pageToken  = null;
 
@@ -116,7 +129,7 @@ async function fetchAllPages(body) {
     const req = { ...body };
     if (pageToken) req.pageToken = pageToken;
 
-    const { places, nextPageToken } = await fetchOnePage(req);
+    const { places, nextPageToken } = await fetchOnePage(req, apiKey);
     allPlaces = allPlaces.concat(places);
     pageToken  = nextPageToken;
 
@@ -130,13 +143,38 @@ async function fetchAllPages(body) {
 // ── POST /api/search ──────────────────────────────────────────────────────────
 
 router.post("/search", async (req, res) => {
-  const { textQuery, maxResults = 60 } = req.body;
+  const { textQuery, maxResults = 20, customGoogleKey } = req.body;
+  const user = getUser(req);
 
   if (!textQuery || !textQuery.trim()) {
     return res.status(400).json({ error: "textQuery is required" });
   }
 
-  const limit = Math.min(Math.max(parseInt(maxResults) || 60, 1), 500);
+  // Determine key and limits
+  let apiKeyToUse = GOOGLE_API_KEY;
+  let enforcedLimit = 20;
+
+  if (customGoogleKey && customGoogleKey.trim().length > 10) {
+    apiKeyToUse = customGoogleKey.trim();
+    enforcedLimit = 100;
+  } else {
+    // Free tier: check daily limit if user is logged in
+    if (user) {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from("lf_search_history")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.userId)
+        .gte("created_at", startOfDay.toISOString());
+
+      if (count >= 3) {
+        return res.status(403).json({ error: "LIMIT_EXCEEDED" });
+      }
+    }
+  }
+
+  const limit = Math.min(Math.max(parseInt(maxResults) || 20, 1), enforcedLimit);
 
   try {
     // ── Phase 1: Initial text search (up to 60 results) ──────────────────────
@@ -144,7 +182,7 @@ router.post("/search", async (req, res) => {
       textQuery:    textQuery.trim(),
       pageSize:     20,
       languageCode: "en",
-    });
+    }, apiKeyToUse);
 
     const seenIds = new Set(initial.map((p) => p.id).filter(Boolean));
     let allRaw    = [...initial];
@@ -204,7 +242,7 @@ router.post("/search", async (req, res) => {
                     radius: RADIUS,
                   },
                 },
-              })
+              }, apiKeyToUse)
             )
           );
 
@@ -274,7 +312,7 @@ router.post("/search", async (req, res) => {
 // Returns plain JSON — no SSE needed, works perfectly through Vite proxy.
 
 router.get("/extract-email", async (req, res) => {
-  const { url, name = "", city = "" } = req.query;
+  const { url, name = "", city = "", customSerperKey } = req.query;
 
   if (!url && !name) {
     return res.json({ email: null });
@@ -282,7 +320,7 @@ router.get("/extract-email", async (req, res) => {
 
   try {
     const { extractEmail } = require("../utils/emailExtractor");
-    const email = await extractEmail(url || null, name, city);
+    const email = await extractEmail(url || null, name, city, customSerperKey);
     return res.json({ email: email || null });
   } catch (err) {
     console.error("[/api/extract-email] Error:", err.message);

@@ -579,8 +579,9 @@ async function lookupWhoisEmail(domain) {
  * @param {string} domain        — e.g. "example.in" (optional fallback query)
  * @returns {Promise<string|null>}
  */
-async function searchWebForEmail(businessName, businessCity, domain) {
-  if (!SERPER_API_KEY) return null;
+async function searchWebForEmail(businessName, businessCity, domain, customSerperKey) {
+  const apiKey = customSerperKey && customSerperKey.trim().length > 10 ? customSerperKey.trim() : SERPER_API_KEY;
+  if (!apiKey) return null;
 
   // Build targeted search queries
   const name = (businessName || "").trim();
@@ -598,7 +599,7 @@ async function searchWebForEmail(businessName, businessCity, domain) {
         { q, gl: "in", hl: "en", num: 10 },
         {
           headers: {
-            "X-API-KEY":    SERPER_API_KEY,
+            "X-API-KEY":    apiKey,
             "Content-Type": "application/json",
           },
           timeout: 5000,
@@ -764,7 +765,7 @@ async function scrapeWithPuppeteer(url, timeoutMs = 12000) {
  * @param {string}      businessCity  — used for web search query
  * @returns {Promise<string|null>}
  */
-async function extractEmail(websiteUrl, businessName = "", businessCity = "") {
+async function extractEmail(websiteUrl, businessName = "", businessCity = "", customSerperKey = null) {
   const normalized = normalizeUrl(websiteUrl);
   const hasWebsite = !!normalized && !shouldSkipUrl(normalized);
 
@@ -806,13 +807,11 @@ async function extractEmail(websiteUrl, businessName = "", businessCity = "") {
     console.log(`  Step 2: No email in WHOIS record`);
   }
 
-  // ── Step 3: Web Search ────────────────────────────────────────────────────
-  if (businessName || domain) {
-    console.log(`  Step 3: Web search for email...`);
-    const searchEmail = await searchWebForEmail(businessName, businessCity, domain);
-    if (searchEmail) return searchEmail;
-    console.log(`  Step 3: No email found via web search`);
-  }
+  // ── Step 3: Web Search via Serper.dev ────────────────────────────────────────
+  console.log(`  Step 3: Querying Serper.dev for mentions...`);
+  const webEmail = await searchWebForEmail(businessName, businessCity, domain, customSerperKey);
+  if (webEmail) return webEmail;
+  console.log(`  Step 3: No email found via web search`);
 
   // ── Step 4: Puppeteer JS Fallback ─────────────────────────────────────────
   if (hasWebsite) {

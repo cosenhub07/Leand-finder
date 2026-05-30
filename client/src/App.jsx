@@ -5,7 +5,7 @@
  * Shows HistoryPanel for past searches.
  */
 
-import { useState, useCallback, useMemo, useRef, Component } from "react";
+import { useState, useCallback, useMemo, useRef, Component, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
@@ -55,9 +55,34 @@ export default function App() {
   const [lowRatingOnly,  setLowRatingOnly]  = useState(false);
   const [hasEmailOnly,   setHasEmailOnly]   = useState(false);
 
+  // ── Usage & Tiers ───────────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState("free"); // "free" | "ai"
+  const [dailySearches, setDailySearches] = useState(0);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [customKeys, setCustomKeys] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("lf_custom_keys")) || { google: "", serper: "" };
+    } catch {
+      return { google: "", serper: "" };
+    }
+  });
+
+  useEffect(() => {
+    if (token) {
+      axios.get("/api/history/usage", { headers: { Authorization: `Bearer ${token}` } })
+        .then((res) => setDailySearches(res.data.searchesToday || 0))
+        .catch(() => {});
+    }
+  }, [token, savedMsg]); // refresh usage when a search is saved
+
+  const saveCustomKeys = (keys) => {
+    setCustomKeys(keys);
+    localStorage.setItem("lf_custom_keys", JSON.stringify(keys));
+    setShowSettingsModal(false);
+  };
+
   // ref to latest results for auto-save after extraction completes
   const resultsRef = useRef([]);
-
 
   // ── Auto-save search to Supabase ─────────────────────────────────────────────
   async function saveToHistory(query, location, businessType, maxResults, finalResults) {
@@ -89,7 +114,14 @@ export default function App() {
     setLastQuery(textQuery);
 
     try {
-      const response = await axios.post("/api/search", { textQuery, maxResults }, { timeout: 120000 });
+      const response = await axios.post("/api/search", {
+        textQuery,
+        maxResults,
+        customGoogleKey: customKeys.google || undefined
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: 120000
+      });
       const { results: places = [], message } = response.data;
 
       if (places.length === 0) {
@@ -132,6 +164,7 @@ export default function App() {
               city: biz.searchLocation
                       ? biz.searchLocation.replace(/^.*\bin\b\s*/i, "").trim()
                       : "",
+              customSerperKey: customKeys.serper || undefined
             },
             timeout: 20000,
           });
@@ -245,8 +278,57 @@ export default function App() {
       {/* ── Main ────────────────────────────────────────────────────────────── */}
       <main className="app-main">
 
-        {/* Search Form */}
-        <SearchForm onSearch={handleSearch} isLoading={isSearching} />
+        {/* ── Tier Tabs ──────────────────────────────────────────────────────── */}
+        <div className="tier-tabs">
+          <button 
+            className={`tier-tab ${activeTab === "free" ? "active" : ""}`}
+            onClick={() => setActiveTab("free")}
+          >
+            Free Search
+          </button>
+          <button 
+            className={`tier-tab ${activeTab === "ai" ? "active" : ""}`}
+            onClick={() => setActiveTab("ai")}
+          >
+            AI Advanced Search 🚀
+          </button>
+        </div>
+
+        {activeTab === "ai" ? (
+          <div className="glass-card p-10 text-center flex flex-col items-center justify-center gap-4 mt-6">
+            <div className="text-5xl">🚧</div>
+            <h2 className="text-2xl font-bold text-white">Building Stage</h2>
+            <p className="text-slate-400 max-w-md">
+              This feature is currently under construction. Please use the Free Search version at this time.
+            </p>
+            <button className="btn-primary mt-2" onClick={() => setActiveTab("free")}>Go to Free Search</button>
+          </div>
+        ) : (
+          <>
+            {/* ── Limit / Upgrade Banner ────────────────────────────────────────── */}
+            {dailySearches >= 3 && (!customKeys.google || !customKeys.serper) && (
+              <div className="limit-banner glass-card mt-4 mb-4 p-5 border-amber-500/30 bg-amber-500/5">
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl">⚠️</span>
+                  <div>
+                    <h3 className="text-amber-400 font-bold text-lg m-0">Daily Limit Reached (3/3)</h3>
+                    <p className="text-slate-300 text-sm mt-1 mb-3">
+                      You have used your 3 free searches for today. To continue searching or to unlock up to 100 results per search, please provide your own API keys.
+                    </p>
+                    <button className="btn-primary !bg-amber-600 hover:!bg-amber-500" onClick={() => setShowSettingsModal(true)}>
+                      Bring Your Own Keys (Settings)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Search Form */}
+            <SearchForm 
+              onSearch={handleSearch} 
+              isLoading={isSearching} 
+              tierLimit={customKeys.google && customKeys.google.length > 10 ? 100 : 20} 
+            />
 
         {/* Error Banner */}
         {error && (
@@ -316,12 +398,58 @@ export default function App() {
             </div>
           </div>
         )}
+        </>
+        )}
       </main>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
       <footer className="app-footer">
         Lead Finder PRO · Google Places API · Supabase · Made for Indian Marketing Agencies 🇮🇳
       </footer>
+      {/* ── Settings Modal (BYOK) ────────────────────────────────────────────── */}
+      {showSettingsModal && (
+        <div className="history-overlay" style={{ alignItems: "center", justifyContent: "center" }} onClick={() => setShowSettingsModal(false)}>
+          <div className="glass-card p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-xl font-bold text-white mb-2">API Settings</h2>
+            <p className="text-sm text-slate-400 mb-6">
+              Enter your API keys to bypass the free limits and unlock 100 results per search. Keys are saved securely in your browser.
+            </p>
+            
+            <div className="flex flex-col gap-4 mb-6">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Google Places API Key</label>
+                <input 
+                  type="password" 
+                  className="input-field" 
+                  defaultValue={customKeys.google}
+                  id="google-key-input"
+                  placeholder="AIzaSy..."
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Serper.dev API Key</label>
+                <input 
+                  type="password" 
+                  className="input-field" 
+                  defaultValue={customKeys.serper}
+                  id="serper-key-input"
+                  placeholder="... (for emails)"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <button className="px-4 py-2 rounded-lg text-slate-300 hover:text-white" onClick={() => setShowSettingsModal(false)}>Cancel</button>
+              <button className="btn-primary" onClick={() => {
+                const g = document.getElementById("google-key-input").value;
+                const s = document.getElementById("serper-key-input").value;
+                saveCustomKeys({ google: g, serper: s });
+              }}>Save Keys</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
     </ErrorBoundary>
   );

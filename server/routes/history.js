@@ -103,6 +103,28 @@ router.get("/list", async (req, res) => {
   return res.json({ history: data || [] });
 });
 
+// ── GET /api/history/usage ────────────────────────────────────────────────────
+router.get("/usage", async (req, res) => {
+  const user = getUser(req);
+  if (!user) return res.status(401).json({ error: "Not authenticated" });
+
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const { count, error } = await supabase
+    .from("lf_search_history")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.userId)
+    .gte("created_at", startOfDay.toISOString());
+
+  if (error) {
+    console.error("[history/usage] Error:", error.message);
+    return res.status(500).json({ error: "Failed to fetch usage" });
+  }
+
+  return res.json({ searchesToday: count || 0 });
+});
+
 // ── GET /api/history/:id ──────────────────────────────────────────────────────
 router.get("/:id", async (req, res) => {
   const user = getUser(req);
