@@ -59,7 +59,7 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
           <input
             id="location-input"
             type="text"
-            className="input-field"
+            className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
             placeholder="e.g. Bhopal, India or Austin, Texas"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
@@ -77,7 +77,7 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
               <input
                 id="custom-type-input"
                 type="text"
-                className="input-field"
+                className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
                 placeholder="e.g. Tailor shops"
                 value={customType}
                 onChange={(e) => setCustomType(e.target.value)}
@@ -95,10 +95,10 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
           ) : (
             <select
               id="business-type-select"
-              className="input-field cursor-pointer"
+              className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors cursor-pointer appearance-none"
               value={businessType}
               onChange={(e) => {
-                if (e.target.value === "__custom__") {
+                if (e.target.value === "custom") {
                   setIsCustom(true);
                   setCustomType("");
                 } else {
@@ -107,9 +107,9 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
               }}
             >
               {BUSINESS_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t} className="bg-slate-800 text-slate-200">{t}</option>
               ))}
-              <option value="__custom__">✏️ Custom type...</option>
+              <option value="custom" className="bg-slate-800 text-indigo-400 font-medium">✨ Custom Search...</option>
             </select>
           )}
         </div>
@@ -123,7 +123,7 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
             id="search-button"
             type="submit"
             disabled={isLoading || !location.trim()}
-            className="btn-primary flex items-center justify-center gap-2 h-[42px]"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 h-[42px] shadow-lg shadow-indigo-500/20"
           >
             {isLoading ? (
               <>
@@ -148,15 +148,15 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
           </label>
           <select
             id="max-results-select"
-            className="input-field !py-1.5 !text-sm w-28 cursor-pointer"
+            className="bg-slate-900/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer appearance-none"
             value={maxResults}
             onChange={(e) => setMaxResults(e.target.value)}
           >
-            <option value="20">20</option>
-            <option value="60" disabled={tierLimit < 60}>60 {tierLimit < 60 ? "🔒" : ""}</option>
-            <option value="100" disabled={tierLimit < 100}>100 {tierLimit < 100 ? "🔒" : ""}</option>
-            <option value="200" disabled={tierLimit < 200}>200 {tierLimit < 200 ? "🔒" : ""}</option>
-            <option value="500" disabled={tierLimit < 500}>500 {tierLimit < 500 ? "🔒" : ""}</option>
+            <option value="20" className="bg-slate-800">20</option>
+            <option value="50" disabled={tierLimit < 50} className="bg-slate-800">50 {tierLimit < 50 ? "🔒" : ""}</option>
+            <option value="100" disabled={tierLimit < 100} className="bg-slate-800">100 {tierLimit < 100 ? "🔒" : ""}</option>
+            <option value="200" disabled={tierLimit < 200} className="bg-slate-800">200 {tierLimit < 200 ? "🔒" : ""}</option>
+            <option value="500" disabled={tierLimit < 500} className="bg-slate-800">500 {tierLimit < 500 ? "🔒" : ""}</option>
           </select>
           <span className="text-xs text-slate-600">businesses</span>
         </div>
