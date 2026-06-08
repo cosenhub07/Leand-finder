@@ -231,7 +231,9 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
             <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/5 transition group relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6 border border-white/10 group-hover:bg-purple-500/20 group-hover:border-purple-500/50 transition-colors">
-                <span className="text-2xl">⚡</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-purple-400 transition-colors group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
               <h3 className="text-xl font-bold mb-3">4-Step Waterfall</h3>
               <p className="text-white/60 leading-relaxed">
@@ -243,7 +245,11 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
             <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/5 transition group relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6 border border-white/10 group-hover:bg-pink-500/20 group-hover:border-pink-500/50 transition-colors">
-                <span className="text-2xl">🎯</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-pink-400 transition-colors group-hover:text-pink-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <circle cx="12" cy="12" r="10" />
+                  <circle cx="12" cy="12" r="6" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
               </div>
               <h3 className="text-xl font-bold mb-3">High-Ticket Targeting</h3>
               <p className="text-white/60 leading-relaxed">
@@ -255,7 +261,9 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
             <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/5 transition group relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6 border border-white/10 group-hover:bg-blue-500/20 group-hover:border-blue-500/50 transition-colors">
-                <span className="text-2xl">✨</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-blue-400 transition-colors group-hover:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
               </div>
               <h3 className="text-xl font-bold mb-3">Beautiful &amp; Fast</h3>
               <p className="text-white/60 leading-relaxed">
