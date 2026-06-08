@@ -239,7 +239,7 @@ export default function App() {
       <header className="app-header">
         <div className="app-header-inner">
           <div className="app-logo">
-            <img src="/src/image/icon.svg" alt="Lead Finder Icon" className="w-8 h-8" />
+            <img src="/icon.svg" alt="Lead Finder Icon" className="w-8 h-8" />
             <div>
               <h1 className="app-logo-title">Lead Finder <span className="app-logo-pro">PRO</span></h1>
               <p className="app-logo-sub">AI-Powered Business Lead Generation</p>
