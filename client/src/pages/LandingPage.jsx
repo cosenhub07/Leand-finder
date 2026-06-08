@@ -148,7 +148,7 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
       {/* ── Navbar ────────────────────────────────────────────────────────── */}
       <nav className="landing-nav">
         <div className="landing-nav-logo flex items-center gap-2">
-          <img src="/icon.svg" alt="Lead Finder Icon" className="w-8 h-8" />
+          <object data="/icon.svg" type="image/svg+xml" aria-label="Lead Finder Icon" className="w-8 h-8 pointer-events-none"></object>
           <h2>Lead Finder <span>PRO</span></h2>
         </div>
         <button id="landing-nav-launch-btn" className="landing-nav-btn" onClick={() => onLaunch('signin')}>

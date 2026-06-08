@@ -6,10 +6,10 @@ const TABS  = { SIGNIN: "signin", SIGNUP: "signup" };
 const STEPS = { FORM: "form", FORGOT_EMAIL: "forgot_email", FORGOT_OTP: "forgot_otp", FORGOT_RESET: "forgot_reset" };
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
-export default function AuthPage({ onBack }) {
+export default function AuthPage({ onBack, initialTab = TABS.SIGNIN }) {
   const { login } = useAuth();
 
-  const [tab,       setTab]     = useState(TABS.SIGNIN);
+  const [tab,       setTab]     = useState(initialTab);
   const [step,      setStep]    = useState(STEPS.FORM);
   const [loading,   setLoading] = useState(false);
   const [gLoading,  setGLoading]  = useState(false);
@@ -161,7 +161,7 @@ export default function AuthPage({ onBack }) {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 shrink-0 rounded-lg border border-white/20 bg-white/5 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-            <img src="/src/image/icon.svg" alt="Lead Finder Icon" className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
+            <object data="/icon.svg" type="image/svg+xml" aria-label="Lead Finder Icon" className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] pointer-events-none"></object>
           </div>
           <div>
             <h1 className="font-inter text-2xl font-bold tracking-tight text-white">
