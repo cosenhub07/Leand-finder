@@ -39,7 +39,7 @@ async function sendOtpEmail(toEmail, toName, otp) {
               style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;
                      border:1px solid rgba(99,102,241,0.3);">
               <tr><td style="padding:36px 40px 20px;">
-                <h1 style="margin:0;font-size:26px;font-weight:800;color:#818cf8;">🎯 Lead Finder</h1>
+                <h1 style="margin:0;font-size:26px;font-weight:800;color:#818cf8;">Lead Finder</h1>
                 <p style="color:#94a3b8;font-size:13px;margin:4px 0 0;">AI-Powered Business Lead Generation</p>
               </td></tr>
               <tr><td style="padding:0 40px 30px;">

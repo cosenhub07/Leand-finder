@@ -40,6 +40,7 @@ export default function App() {
 
   // ── Core State ──────────────────────────────────────────────────────────────
   const [publicView,    setPublicView]    = useState("landing"); // "landing" | "auth"
+  const [authTab,       setAuthTab]       = useState("signin");
   const [results,       setResults]       = useState([]);
   const [isSearching,   setIsSearching]   = useState(false);
   const [isExtracting,  setIsExtracting]  = useState(false);
@@ -226,9 +227,9 @@ export default function App() {
 
   if (!user) {
     if (publicView === "landing") {
-      return <LandingPage onLaunch={() => setPublicView("auth")} />;
+      return <LandingPage onLaunch={(tab = "signin") => { setAuthTab(tab); setPublicView("auth"); }} />;
     }
-    return <AuthPage onBack={() => setPublicView("landing")} />;
+    return <AuthPage onBack={() => setPublicView("landing")} initialTab={authTab} />;
   }
 
   return (
@@ -382,7 +383,7 @@ export default function App() {
         {/* Empty state */}
         {!isSearching && results.length === 0 && !error && (
           <div className="empty-state">
-            <div className="empty-icon">🎯</div>
+            <div className="empty-icon">🔍</div>
             <h2 className="empty-title">Find Your Next Clients</h2>
             <p className="empty-sub">
               Enter a city and business type above to discover local businesses with weak
@@ -404,7 +405,7 @@ export default function App() {
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
       <footer className="app-footer">
-        Lead Finder PRO · Google Places API · Supabase · Made for Indian Marketing Agencies 🇮🇳
+        Lead Finder PRO · Made for Indian Marketing Agencies 🇮🇳
       </footer>
       {/* ── Settings Modal (BYOK) ────────────────────────────────────────────── */}
       {showSettingsModal && (

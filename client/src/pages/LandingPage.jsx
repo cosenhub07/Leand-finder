@@ -151,41 +151,50 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           <img src="/src/image/icon.svg" alt="Lead Finder Icon" className="w-8 h-8" />
           <h2>Lead Finder <span>PRO</span></h2>
         </div>
-        <button id="landing-nav-launch-btn" className="landing-nav-btn" onClick={onLaunch}>
-          Launch App →
+        <button id="landing-nav-launch-btn" className="landing-nav-btn" onClick={() => onLaunch('signin')}>
+          Login
         </button>
       </nav>
 
       {/* ── Hero Section ──────────────────────────────────────────────────── */}
-      <header className="landing-hero">
-        <div className="landing-hero-badge">
-          <span>🇮🇳</span> High-Converting Leads for Indian Marketing Agencies
+      <header className="landing-hero relative overflow-hidden">
+        {/* Ambient Mesh Gradients */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-40 mix-blend-screen">
+          <div className="absolute w-[800px] h-[600px] bg-gradient-to-tr from-[#7928ca] to-[#ff0080] rounded-full blur-[120px] opacity-30" style={{ transform: 'translate3d(-20%, -10%, 0)' }} />
+          <div className="absolute w-[600px] h-[500px] bg-gradient-to-tr from-[#007cf0] to-[#00dfd8] rounded-full blur-[100px] opacity-30" style={{ transform: 'translate3d(30%, 20%, 0)' }} />
         </div>
-        <h1 className="text-balance">
-          Find High-Ticket Web Design <br />
-          &amp; SEO Clients <span>on Autopilot</span>
-        </h1>
-        <p className="hero-subtitle text-balance">
-          Instantly scan any city, discover local businesses with a weak online presence, 
-          and extract verified owner emails through our premium 4-step waterfall pipeline.
-        </p>
-        
-        <button id="landing-hero-cta-btn" className="landing-cta-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:ring-offset-bg" onClick={onLaunch}>
-          🎯 Get Started for Free
-        </button>
 
-        <div className="landing-hero-stats">
-          <div className="landing-hero-stat">
-            <span className="stat-num tabular-nums">500+</span>
-            <span className="stat-label">Max Leads/Search</span>
+        {/* Glass Container */}
+        <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center bg-black/30 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 md:p-16 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+          <div className="landing-hero-badge">
+            <span>🇮🇳</span> High-Converting Leads for Indian Marketing Agencies
           </div>
-          <div className="landing-hero-stat">
-            <span className="stat-num tabular-nums">~60%</span>
-            <span className="stat-label">Email Find Rate</span>
-          </div>
-          <div className="landing-hero-stat">
-            <span className="stat-num tabular-nums">100%</span>
-            <span className="stat-label">Secure OTP Login</span>
+          <h1 className="text-balance">
+            Find High-Ticket Web Design <br />
+            &amp; SEO Clients <span>on Autopilot</span>
+          </h1>
+          <p className="hero-subtitle text-balance">
+            Instantly scan any city, discover local businesses with a weak online presence, 
+            and extract verified owner emails through our premium 4-step waterfall pipeline.
+          </p>
+          
+          <button id="landing-hero-cta-btn" className="landing-cta-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:ring-offset-bg" onClick={() => onLaunch('signup')}>
+            Get Started for Free
+          </button>
+
+          <div className="landing-hero-stats flex flex-wrap justify-center items-center w-full max-w-3xl mt-12 gap-10 md:gap-20 pt-10 border-t border-white/10">
+            <div className="landing-hero-stat">
+              <span className="stat-num tabular-nums">500+</span>
+              <span className="stat-label">Max Leads/Search</span>
+            </div>
+            <div className="landing-hero-stat">
+              <span className="stat-num tabular-nums">~60%</span>
+              <span className="stat-label">Email Find Rate</span>
+            </div>
+            <div className="landing-hero-stat">
+              <span className="stat-num tabular-nums">100%</span>
+              <span className="stat-label">Secure OTP Login</span>
+            </div>
           </div>
         </div>
       </header>
@@ -492,9 +501,7 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
             <p>
               Traditional scrapers miss over 70% of local emails because of dynamic Wix/React sites or cheap server blocking. Lead Finder PRO handles all edge cases with a custom grid-search coordination and automatic email waterfall logic.
             </p>
-            <div className="roi-highlight">
-              💡 <strong>Pro Tip:</strong> Hot leads (no website, low review count) are color-coded in Saffron so your sales team knows exactly where to pitch.
-            </div>
+
           </div>
 
           <div className="roi-table-card">
@@ -578,14 +585,14 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
       <section className="landing-cta-banner">
         <h2>Ready to Find Your Next High-Ticket Clients?</h2>
         <p>Log in with your email to start scanning businesses in seconds.</p>
-        <button id="landing-bottom-cta-btn" className="landing-cta-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg" onClick={onLaunch}>
-          🎯 Launch Dashboard Now
+        <button id="landing-bottom-cta-btn" className="landing-cta-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg" onClick={() => onLaunch('signup')}>
+          Launch Dashboard Now
         </button>
       </section>
 
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="landing-footer">
-        © 2026 Lead Finder PRO · Google Places API · Brevo SMTP · Supabase Integration · Designed for Indian Marketing Agencies 🇮🇳
+        © 2026 Lead Finder PRO · Designed for Indian Marketing Agencies 🇮🇳
       </footer>
     </div>
   );
