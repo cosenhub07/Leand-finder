@@ -147,8 +147,8 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
 
       {/* ── Navbar ────────────────────────────────────────────────────────── */}
       <nav className="landing-nav">
-        <div className="landing-nav-logo">
-          <span>🎯</span>
+        <div className="landing-nav-logo flex items-center gap-2">
+          <img src="/src/image/icon.svg" alt="Lead Finder Icon" className="w-8 h-8" />
           <h2>Lead Finder <span>PRO</span></h2>
         </div>
         <button id="landing-nav-launch-btn" className="landing-nav-btn" onClick={onLaunch}>
@@ -161,30 +161,30 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
         <div className="landing-hero-badge">
           <span>🇮🇳</span> High-Converting Leads for Indian Marketing Agencies
         </div>
-        <h1>
+        <h1 className="text-balance">
           Find High-Ticket Web Design <br />
           &amp; SEO Clients <span>on Autopilot</span>
         </h1>
-        <p className="hero-subtitle">
+        <p className="hero-subtitle text-balance">
           Instantly scan any city, discover local businesses with a weak online presence, 
           and extract verified owner emails through our premium 4-step waterfall pipeline.
         </p>
         
-        <button id="landing-hero-cta-btn" className="landing-cta-btn" onClick={onLaunch}>
+        <button id="landing-hero-cta-btn" className="landing-cta-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:ring-offset-bg" onClick={onLaunch}>
           🎯 Get Started for Free
         </button>
 
         <div className="landing-hero-stats">
           <div className="landing-hero-stat">
-            <span className="stat-num">500+</span>
+            <span className="stat-num tabular-nums">500+</span>
             <span className="stat-label">Max Leads/Search</span>
           </div>
           <div className="landing-hero-stat">
-            <span className="stat-num">~60%</span>
+            <span className="stat-num tabular-nums">~60%</span>
             <span className="stat-label">Email Find Rate</span>
           </div>
           <div className="landing-hero-stat">
-            <span className="stat-num">100%</span>
+            <span className="stat-num tabular-nums">100%</span>
             <span className="stat-label">Secure OTP Login</span>
           </div>
         </div>
@@ -211,20 +211,20 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
             {/* Mock Search Bar */}
             <div className="landing-mock-search">
               <div className="mock-input">
-                🔍 {mockInput || <span style={{ color: "#334155" }}>Restaurants in Mumbai</span>}
+                🔍 {mockInput || <span className="text-slate-700">Restaurants in Mumbai</span>}
                 {mockSearchStep === 1 && <span className="typing-cursor">|</span>}
               </div>
-              <button className="mock-search-btn" disabled>
-                {isMockSearching ? "Scanning..." : "Search"}
+              <button className="mock-search-btn disabled:opacity-50" disabled>
+                {isMockSearching ? "Scanning…" : "Search"}
               </button>
             </div>
 
             {/* Mock Results Board */}
             <div className="landing-mock-results">
               {isMockSearching && (
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 0", gap: 10 }}>
+                <div className="flex flex-col items-center py-10 gap-2.5">
                   <span className="auth-spinner" />
-                  <p style={{ fontSize: 13, color: "#818cf8" }}>Querying Google Places &amp; breaking city into search grids...</p>
+                  <p className="text-[13px] text-primary-light">Querying Google Places &amp; breaking city into search grids…</p>
                 </div>
               )}
               
@@ -268,67 +268,67 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           We rate every business out of 100 points based on their sales vulnerability. Toggle the checkmarks below to simulate our scoring logic in real time!
         </p>
 
-        <div className="roi-container" style={{ maxWidth: 980 }}>
+        <div className="roi-container max-w-[980px]">
           {/* Scoring Factors Checklist */}
           <div className="roi-pitch">
-            <h3 style={{ fontSize: 20, marginBottom: 20 }}>Select Missing Elements:</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+            <h3 className="text-xl mb-5">Select Missing Elements:</h3>
+            <div className="flex flex-col gap-3.5">
+              <label className="flex items-center gap-3 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={scoreFactors.noWebsite}
                   onChange={(e) => setScoreFactors(prev => ({ ...prev, noWebsite: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                  className="w-[18px] h-[18px] accent-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
                 />
                 🌐 Website is Missing (+25 Pts)
               </label>
               
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+              <label className="flex items-center gap-3 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={scoreFactors.lowRating}
                   onChange={(e) => setScoreFactors(prev => ({ ...prev, lowRating: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                  className="w-[18px] h-[18px] accent-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
                 />
                 ⭐ Google Rating is Low/Empty (+20 Pts)
               </label>
 
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+              <label className="flex items-center gap-3 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={scoreFactors.fewReviews}
                   onChange={(e) => setScoreFactors(prev => ({ ...prev, fewReviews: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                  className="w-[18px] h-[18px] accent-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
                 />
                 💬 Less than 5 Google Reviews (+20 Pts)
               </label>
 
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+              <label className="flex items-center gap-3 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={scoreFactors.fewPhotos}
                   onChange={(e) => setScoreFactors(prev => ({ ...prev, fewPhotos: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                  className="w-[18px] h-[18px] accent-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
                 />
                 📸 Less than 3 Google Photos (+15 Pts)
               </label>
 
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+              <label className="flex items-center gap-3 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={scoreFactors.noPhone}
                   onChange={(e) => setScoreFactors(prev => ({ ...prev, noPhone: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                  className="w-[18px] h-[18px] accent-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
                 />
                 📞 No Phone Number listed (+10 Pts)
               </label>
 
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", fontSize: 14 }}>
+              <label className="flex items-center gap-3 cursor-pointer text-sm">
                 <input
                   type="checkbox"
                   checked={scoreFactors.noHours}
                   onChange={(e) => setScoreFactors(prev => ({ ...prev, noHours: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: "#f97316" }}
+                  className="w-[18px] h-[18px] accent-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
                 />
                 🕐 No Business Hours listed (+10 Pts)
               </label>
@@ -336,46 +336,23 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           </div>
 
           {/* Glowing Animated Score Visualizer Card */}
-          <div style={{
-            background: "rgba(15, 23, 42, 0.8)",
-            border: "1px solid rgba(99, 102, 241, 0.25)",
-            borderRadius: 20,
-            padding: 40,
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            boxShadow: "0 10px 40px rgba(99, 102, 241, 0.1)"
-          }}>
-            <h4 style={{ textTransform: "uppercase", fontSize: 11, color: "#64748b", letterSpacing: 1.5, marginBottom: 15 }}>
+          <div className="bg-slate-900/80 border border-primary/25 rounded-[20px] p-10 text-center flex flex-col items-center shadow-[0_10px_40px_rgba(99,102,241,0.1)]">
+            <h4 className="uppercase text-[11px] text-slate-500 tracking-[1.5px] mb-[15px]">
               Live Score Breakdown
             </h4>
 
             {/* Glowing Ring */}
-            <div style={{
-              width: 140,
-              height: 140,
-              borderRadius: "50%",
-              border: `6px solid ${calculatedScore >= 60 ? "#f97316" : calculatedScore >= 35 ? "#f59e0b" : "#60a5fa"}`,
-              boxShadow: `0 0 25px ${calculatedScore >= 60 ? "rgba(249,115,22,0.25)" : calculatedScore >= 35 ? "rgba(245,158,11,0.2)" : "rgba(96,165,250,0.15)"}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 48,
-              fontWeight: 900,
-              color: "white",
-              fontFamily: "'Outfit', sans-serif",
-              marginBottom: 20,
-              transition: "all 0.3s"
-            }}>
+            <div 
+              className={`w-[140px] h-[140px] rounded-full border-[6px] flex items-center justify-center text-5xl font-black text-white font-outfit mb-5 transition-all duration-300 tabular-nums ${calculatedScore >= 60 ? 'border-accent shadow-[0_0_25px_rgba(249,115,22,0.25)]' : calculatedScore >= 35 ? 'border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.2)]' : 'border-blue-400 shadow-[0_0_25px_rgba(96,165,250,0.15)]'}`}
+            >
               {calculatedScore}
             </div>
 
-            <span className={`roi-tag ${labelClass}`} style={{ fontSize: 13, padding: "4px 14px", borderRadius: 6, fontWeight: 700 }}>
+            <span className={`roi-tag ${labelClass} text-[13px] px-[14px] py-1 rounded-md font-bold`}>
               {leadLabel}
             </span>
 
-            <p style={{ fontSize: 12, color: "#64748b", marginTop: 15, lineHeight: 1.4 }}>
+            <p className="text-xs text-slate-500 mt-[15px] leading-relaxed text-balance">
               Businesses with higher scores are perfect cold-outreach candidates. They need websites, marketing, and reputation management immediately.
             </p>
           </div>
@@ -435,31 +412,21 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           Copy our battle-tested, high-converting agency cold email template. Optimized specifically for pitching found leads.
         </p>
 
-        <div className="landing-live-preview" style={{ maxWidth: 850, padding: 0, border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="landing-live-preview max-w-[850px] p-0 border border-white/5">
           {/* Mock Client Top */}
-          <div style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 12, color: "#64748b" }}>To: <strong>info@saffronspice.in</strong> (Saffron Spice Restaurant)</span>
+          <div className="bg-white/5 border-b border-white/5 px-5 py-3 flex justify-between items-center">
+            <span className="text-xs text-slate-500">To: <strong>info@saffronspice.in</strong> (Saffron Spice Restaurant)</span>
             <button
               onClick={handleCopyPitch}
-              style={{
-                background: isCopied ? "#10b981" : "rgba(99, 102, 241, 0.15)",
-                border: `1px solid ${isCopied ? "#10b981" : "rgba(99, 102, 241, 0.3)"}`,
-                color: isCopied ? "white" : "#818cf8",
-                fontSize: 11,
-                padding: "5px 12px",
-                borderRadius: 6,
-                cursor: "pointer",
-                fontWeight: 700,
-                transition: "all 0.2s"
-              }}
+              className={`text-[11px] px-3 py-1.5 rounded-md font-bold cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg focus-visible:outline-none ${isCopied ? 'bg-emerald-500 border border-emerald-500 text-white' : 'bg-primary/15 border border-primary/30 text-primary-light hover:bg-primary/25'}`}
             >
               {isCopied ? "✓ Copied!" : "📋 Copy Outreach Email"}
             </button>
           </div>
 
           {/* Email Text */}
-          <div style={{ padding: 24, fontFamily: "monospace", fontSize: 13, color: "#94a3b8", lineHeight: 1.6, background: "#090a12" }}>
-            <span style={{ color: "#818cf8" }}>Subject: Quick question about Saffron Spice Restaurant's online presence...</span><br /><br />
+          <div className="p-6 font-mono text-[13px] text-slate-400 leading-relaxed bg-[#090a12] text-left">
+            <span className="text-primary-light">Subject: Quick question about Saffron Spice Restaurant's online presence…</span><br /><br />
             Hi Team, 👋<br /><br />
             I noticed you have over 50 great reviews on Google Maps but don't have a website listed under your profile.<br /><br />
             In today's market, 72% of customers search for a local menu/booking page before visiting. By adding a sleek, fast-loading website and booking funnel, we could help you capture another 15-20 clients per week.<br /><br />
@@ -475,10 +442,10 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           How much time and money does your agency save using Lead Finder PRO? Drag the slider to calculate your savings!
         </p>
 
-        <div className="glass-card p-6" style={{ maxWidth: 650, width: "100%", textAlign: "center" }}>
-          <div style={{ marginBottom: 25 }}>
-            <label style={{ fontSize: 14, color: "#94a3b8", display: "block", marginBottom: 10 }}>
-              Leads Needed Per Month: <strong>{roiLeads}</strong>
+        <div className="glass-card p-6 max-w-[650px] w-full text-center">
+          <div className="mb-6">
+            <label className="text-sm text-slate-400 block mb-2.5">
+              Leads Needed Per Month: <strong className="tabular-nums">{roiLeads}</strong>
             </label>
             <input
               type="range"
@@ -487,28 +454,29 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
               step="100"
               value={roiLeads}
               onChange={(e) => setRoiLeads(parseInt(e.target.value))}
-              style={{ width: "100%", accentColor: "#f97316", cursor: "pointer" }}
+              className="w-full accent-accent cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+              aria-label="Leads Needed Per Month"
             />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 15 }}>
-            <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, padding: 15 }}>
-              <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Time Saved</span>
-              <p style={{ fontSize: 20, fontWeight: 800, color: "#818cf8", fontFamily: "Outfit", marginTop: 4 }}>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white/5 rounded-lg p-4">
+              <span className="text-[11px] text-slate-500 uppercase">Time Saved</span>
+              <p className="text-xl font-extrabold text-primary-light font-outfit mt-1 tabular-nums">
                 {Math.round((roiLeads * 5) / 60)} hrs
               </p>
             </div>
             
-            <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, padding: 15 }}>
-              <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Manual Cost Saved</span>
-              <p style={{ fontSize: 20, fontWeight: 800, color: "#f97316", fontFamily: "Outfit", marginTop: 4 }}>
+            <div className="bg-white/5 rounded-lg p-4">
+              <span className="text-[11px] text-slate-500 uppercase">Manual Cost Saved</span>
+              <p className="text-xl font-extrabold text-accent font-outfit mt-1 tabular-nums">
                 ₹{(roiLeads * 12).toLocaleString()}
               </p>
             </div>
 
-            <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, padding: 15 }}>
-              <span style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase" }}>Emails Found</span>
-              <p style={{ fontSize: 20, fontWeight: 800, color: "#10b981", fontFamily: "Outfit", marginTop: 4 }}>
+            <div className="bg-white/5 rounded-lg p-4">
+              <span className="text-[11px] text-slate-500 uppercase">Emails Found</span>
+              <p className="text-xl font-extrabold text-emerald-500 font-outfit mt-1 tabular-nums">
                 ~{Math.round(roiLeads * 0.58)} leads
               </p>
             </div>
@@ -572,7 +540,7 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
         
         <div className="faq-list">
           <div className="faq-item">
-            <button className="faq-question" onClick={() => toggleFaq(0)}>
+            <button className="faq-question focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-md" onClick={() => toggleFaq(0)}>
               How does the OTP Signup work? <span>{activeFaq === 0 ? "−" : "+"}</span>
             </button>
             {activeFaq === 0 && (
@@ -583,7 +551,7 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           </div>
 
           <div className="faq-item">
-            <button className="faq-question" onClick={() => toggleFaq(1)}>
+            <button className="faq-question focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-md" onClick={() => toggleFaq(1)}>
               Is my search history saved? <span>{activeFaq === 1 ? "−" : "+"}</span>
             </button>
             {activeFaq === 1 && (
@@ -594,7 +562,7 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
           </div>
 
           <div className="faq-item">
-            <button className="faq-question" onClick={() => toggleFaq(2)}>
+            <button className="faq-question focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-md" onClick={() => toggleFaq(2)}>
               Can I export files for Excel? <span>{activeFaq === 2 ? "−" : "+"}</span>
             </button>
             {activeFaq === 2 && (
@@ -610,7 +578,7 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
       <section className="landing-cta-banner">
         <h2>Ready to Find Your Next High-Ticket Clients?</h2>
         <p>Log in with your email to start scanning businesses in seconds.</p>
-        <button id="landing-bottom-cta-btn" className="landing-cta-btn" onClick={onLaunch}>
+        <button id="landing-bottom-cta-btn" className="landing-cta-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg" onClick={onLaunch}>
           🎯 Launch Dashboard Now
         </button>
       </section>
