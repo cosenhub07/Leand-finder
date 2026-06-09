@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
-
 export default function PricingPage({ onBack, onAuth }) {
   const { user } = useAuth();
   const [currency, setCurrency] = useState("INR"); // INR or USD
@@ -28,7 +26,7 @@ export default function PricingPage({ onBack, onAuth }) {
     setProcessingPlan(plan.name);
     try {
       const price = billing === "Annual" ? plan.annualPrice : plan.monthlyPrice;
-      const { data: order } = await axios.post(`${API_BASE_URL}/payments/create-order`, {
+      const { data: order } = await axios.post(`/api/payments/create-order`, {
         amount: price,
         currency: currency
       });
@@ -47,7 +45,7 @@ export default function PricingPage({ onBack, onAuth }) {
               user: { name: user.name, email: user.email },
               plan: { name: plan.name, billing: billing }
             };
-            await axios.post(`${API_BASE_URL}/payments/verify-payment`, verificationPayload);
+            await axios.post(`/api/payments/verify-payment`, verificationPayload);
             alert("Payment successful! Welcome to LeadFinder Pro.");
           } catch (err) {
             alert("Payment verification failed.");
