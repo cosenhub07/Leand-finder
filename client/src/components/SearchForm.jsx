@@ -5,6 +5,8 @@
  */
 
 import React, { useState } from "react";
+import Lottie from "lottie-react";
+import loadingAnimation from "../image/loding_status.json";
 
 const BUSINESS_TYPES = [
   "Restaurants",
@@ -127,7 +129,7 @@ export default function SearchForm({ onSearch, isLoading, tierLimit = 20 }) {
           >
             {isLoading ? (
               <>
-                <span className="spinner" />
+                <div className="w-5 h-5"><Lottie animationData={loadingAnimation} loop={true} /></div>
                 <span>Searching...</span>
               </>
             ) : (

@@ -219,10 +219,11 @@ export default function App() {
   // ── Render ───────────────────────────────────────────────────────────────
   if (authLoading) {
     return (
-      <div className="auth-page">
-        <div className="auth-blob blob-1" /><div className="auth-blob blob-2" />
-        <div style={{ color: "#818cf8", fontSize: 18, fontWeight: 600 }}>
-          <span className="auth-spinner" style={{ marginRight: 10 }} />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-slate-50 bg-[radial-gradient(circle_at_15%_50%,rgba(99,102,241,0.08),transparent_25%),radial-gradient(circle_at_85%_30%,rgba(236,72,153,0.08),transparent_25%)] bg-fixed">
+        <div className="w-40 h-40 mb-4">
+          <Lottie animationData={loadingAnimation} loop={true} />
+        </div>
+        <div className="text-indigo-400 text-lg font-semibold tracking-tight animate-pulse">
           Loading Lead Finder...
         </div>
       </div>

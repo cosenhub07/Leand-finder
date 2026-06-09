@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import Lottie from "lottie-react";
+import loadingAnimation from "../image/loding_status.json";
 
 export default function HistoryPanel({ onLoadSearch, onClose }) {
   const { token }                 = useAuth();
@@ -65,8 +67,11 @@ export default function HistoryPanel({ onLoadSearch, onClose }) {
       </div>
 
       {loading && (
-        <div className="history-loading">
-          <span className="auth-spinner" /> Loading history...
+        <div className="history-loading flex flex-col items-center py-10">
+          <div className="w-16 h-16 mb-2">
+            <Lottie animationData={loadingAnimation} loop={true} />
+          </div>
+          <span className="text-sm text-slate-400">Loading history...</span>
         </div>
       )}
 
@@ -94,7 +99,9 @@ export default function HistoryPanel({ onLoadSearch, onClose }) {
                 onClick={() => handleLoad(h)}
                 disabled={loadingId === h.id}
               >
-                {loadingId === h.id ? <span className="auth-spinner small" /> : "↩ Load"}
+                {loadingId === h.id ? (
+                  <div className="w-6 h-6 mx-auto"><Lottie animationData={loadingAnimation} loop={true} /></div>
+                ) : "↩ Load"}
               </button>
             </li>
           ))}
