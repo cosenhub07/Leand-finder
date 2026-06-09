@@ -8,8 +8,9 @@ const MOCK_RESULTS = [
   { name: "Capital Fitness Hub", site: "capitalfitness.in", email: "support@capitalfitness.in", score: 55, label: "warm" },
 ];
 
-export default function LandingPage({ onLaunch }) {
+export default function LandingPage({ onLaunch, onPricing }) {
   const [activeFaq, setActiveFaq] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Mock Search Preview States
   const [mockInput, setMockInput] = useState("");
@@ -142,26 +143,53 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
     <div className="min-h-screen bg-black text-white font-inter selection:bg-purple-500/30 overflow-x-hidden">
       
       {/* ── Navbar ────────────────────────────────────────────────────────── */}
-      <div className="bg-black/50 backdrop-blur-md sticky top-0 z-50 border-b border-white/10 px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2 cursor-pointer">
-          <object data="/icon.svg" type="image/svg+xml" aria-label="Lead Finder Icon" className="w-8 h-8 pointer-events-none filter invert opacity-90"></object>
-          <h2 className="text-xl font-bold tracking-tight">Lead Finder <span className="bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">PRO</span></h2>
-        </div>
-        <nav className="hidden md:flex gap-6 items-center text-sm font-medium">
-          <a href="#features" className="text-white/60 hover:text-white transition">Features</a>
-          <a href="#tools" className="text-white/60 hover:text-white transition">Tools</a>
-          <a href="#faqs" className="text-white/60 hover:text-white transition">FAQs</a>
-          <button 
-            className="bg-white text-black py-2 px-4 rounded-lg hover:bg-gray-200 transition font-semibold"
-            onClick={() => onLaunch('signin')}
-          >
-            Dashboard
+      <div className="bg-black/50 backdrop-blur-md sticky top-0 z-50 border-b border-white/10">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 cursor-pointer">
+            <object data="/icon.svg" type="image/svg+xml" aria-label="Lead Finder Icon" className="w-8 h-8 pointer-events-none filter invert opacity-90"></object>
+            <h2 className="text-xl font-bold tracking-tight">Lead Finder <span className="bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">PRO</span></h2>
+          </div>
+          <nav className="hidden md:flex gap-6 items-center text-sm font-medium">
+            <a href="#features" className="text-white/60 hover:text-white transition">Features</a>
+            <a href="#tools" className="text-white/60 hover:text-white transition">Tools</a>
+            <button onClick={onPricing} className="text-white/60 hover:text-white transition bg-transparent border-none cursor-pointer">Pricing</button>
+            <a href="#faqs" className="text-white/60 hover:text-white transition">FAQs</a>
+            <button 
+              className="bg-white text-black py-2 px-4 rounded-lg hover:bg-gray-200 transition font-semibold"
+              onClick={() => onLaunch('signin')}
+            >
+              Dashboard
+            </button>
+          </nav>
+          {/* Mobile trigger */}
+          <button className="md:hidden text-white/70 hover:text-white p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              )}
+            </svg>
           </button>
-        </nav>
-        {/* Mobile trigger */}
-        <button className="md:hidden text-white/70 hover:text-white" onClick={() => onLaunch('signin')}>
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
-        </button>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-white/10 px-4 py-4 bg-black/95">
+            <nav className="flex flex-col gap-4 text-sm font-medium">
+              <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-white/60 hover:text-white transition">Features</a>
+              <a href="#tools" onClick={() => setIsMobileMenuOpen(false)} className="text-white/60 hover:text-white transition">Tools</a>
+              <button onClick={() => { setIsMobileMenuOpen(false); onPricing(); }} className="text-left text-white/60 hover:text-white transition bg-transparent border-none cursor-pointer">Pricing</button>
+              <a href="#faqs" onClick={() => setIsMobileMenuOpen(false)} className="text-white/60 hover:text-white transition">FAQs</a>
+              <button 
+                className="bg-white text-black py-2 px-4 rounded-lg hover:bg-gray-200 transition font-semibold text-center mt-2"
+                onClick={() => { setIsMobileMenuOpen(false); onLaunch('signin'); }}
+              >
+                Dashboard
+              </button>
+            </nav>
+          </div>
+        )}
       </div>
 
       {/* ── Hero Section ──────────────────────────────────────────────────── */}

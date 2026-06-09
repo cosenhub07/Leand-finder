@@ -9,6 +9,7 @@ const cors          = require("cors");
 const placesRouter  = require("./routes/places");
 const authRouter    = require("./routes/auth");
 const historyRouter = require("./routes/history");
+const paymentsRouter = require("./routes/payments");
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
@@ -28,6 +29,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use("/api",         placesRouter);
 app.use("/api/auth",    authRouter);
 app.use("/api/history", historyRouter);
+app.use("/api/payments", paymentsRouter);
 
 // ── Health check ────────────────────────────────────────────────────────────
 app.get("/health", (_req, res) => {

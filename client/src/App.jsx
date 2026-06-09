@@ -9,6 +9,7 @@ import { useState, useCallback, useMemo, useRef, Component, useEffect } from "re
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
+import PricingPage from "./components/PricingPage";
 import LandingPage from "./pages/LandingPage";
 import SearchForm from "./components/SearchForm";
 import FilterBar from "./components/FilterBar";
@@ -227,7 +228,10 @@ export default function App() {
 
   if (!user) {
     if (publicView === "landing") {
-      return <LandingPage onLaunch={(tab = "signin") => { setAuthTab(tab); setPublicView("auth"); }} />;
+      return <LandingPage onLaunch={(tab = "signin") => { setAuthTab(tab); setPublicView("auth"); }} onPricing={() => setPublicView("pricing")} />;
+    }
+    if (publicView === "pricing") {
+      return <PricingPage onBack={() => setPublicView("landing")} />;
     }
     return <AuthPage onBack={() => setPublicView("landing")} initialTab={authTab} />;
   }

@@ -20,6 +20,7 @@
     "google-auth-library": "^9.15.1",
     "jsonwebtoken": "^9.0.3",
     "puppeteer": "^25.1.0",
+    "razorpay": "^2.9.6",
     "whois": "^2.16.1"
   },
   "devDependencies": {
