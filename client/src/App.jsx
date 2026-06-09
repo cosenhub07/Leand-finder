@@ -16,6 +16,8 @@ import FilterBar from "./components/FilterBar";
 import ResultsTable from "./components/ResultsTable";
 import ExportButton from "./components/ExportButton";
 import HistoryPanel from "./components/HistoryPanel";
+import Lottie from "lottie-react";
+import loadingAnimation from "./image/loding_status.json";
 
 // ── Error Boundary to catch dashboard crashes ────────────────────────────────
 class ErrorBoundary extends Component {
@@ -49,6 +51,7 @@ export default function App() {
   const [lastQuery,     setLastQuery]     = useState("");
   const [emailProgress, setEmailProgress] = useState({ completed: 0, total: 0 });
   const [showHistory,   setShowHistory]   = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
   const [savedMsg,      setSavedMsg]      = useState("");   // "Search saved ✅"
 
   // ── Filters ─────────────────────────────────────────────────────────────────
@@ -231,9 +234,13 @@ export default function App() {
       return <LandingPage onLaunch={(tab = "signin") => { setAuthTab(tab); setPublicView("auth"); }} onPricing={() => setPublicView("pricing")} />;
     }
     if (publicView === "pricing") {
-      return <PricingPage onBack={() => setPublicView("landing")} />;
+      return <PricingPage onBack={() => setPublicView("landing")} onAuth={() => { setAuthTab("signup"); setPublicView("auth"); }} />;
     }
     return <AuthPage onBack={() => setPublicView("landing")} initialTab={authTab} />;
+  }
+
+  if (user && showPricing) {
+    return <PricingPage onBack={() => setShowPricing(false)} />;
   }
 
   return (
@@ -252,6 +259,14 @@ export default function App() {
 
           <div className="flex items-center gap-2 sm:gap-4">
             {savedMsg && <span className="text-[10px] sm:text-xs text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 sm:px-3 py-1 rounded-full hidden sm:block animate-[fadeIn_0.3s_ease]">{savedMsg}</span>}
+            <button
+              className="bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 text-orange-400 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center"
+              onClick={() => setShowPricing(true)}
+              title="Pricing & Upgrade"
+            >
+              <span className="sm:hidden">⚡</span>
+              <span className="hidden sm:inline">⚡ Upgrade</span>
+            </button>
             <button
               className="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center"
               onClick={() => setShowHistory((v) => !v)}
@@ -350,10 +365,9 @@ export default function App() {
 
         {/* Searching Spinner */}
         {isSearching && (
-          <div className="loading-card">
-            <div className="loading-spinner-wrap">
-              <div className="loading-ring ring-1" />
-              <div className="loading-ring ring-2" />
+          <div className="loading-card flex items-center p-6 bg-slate-900 border border-slate-800 rounded-xl">
+            <div className="w-16 h-16 mr-4 flex-shrink-0">
+              <Lottie animationData={loadingAnimation} loop={true} />
             </div>
             <div>
               <p className="loading-title">Searching Google Places...</p>

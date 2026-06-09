@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Lottie from "lottie-react";
+import loadingAnimation from "../image/loding_status.json";
 
 const MOCK_RESULTS = [
   { name: "Saffron Spice Restaurant", site: "saffronspice.in", email: "info@saffronspice.in", score: 85, label: "hot" },
@@ -343,12 +345,11 @@ Let me know if you'd be open to a quick 5-minute call to see a mock design I dre
 
                 <div className="space-y-3 min-h-[300px]">
                   {isMockSearching && (
-                    <div className="flex justify-center items-center h-full py-20 text-purple-400 gap-3">
-                      <svg className="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Querying Grid Sectors...
+                    <div className="flex flex-col justify-center items-center h-full py-10 text-purple-400 gap-3">
+                      <div className="w-24 h-24">
+                        <Lottie animationData={loadingAnimation} loop={true} />
+                      </div>
+                      <span className="font-mono text-sm opacity-80">Querying Grid Sectors...</span>
                     </div>
                   )}
 
