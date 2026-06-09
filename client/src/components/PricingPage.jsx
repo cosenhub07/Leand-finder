@@ -8,7 +8,7 @@ export default function PricingPage({ onBack, onAuth }) {
   const { user } = useAuth();
   const [currency, setCurrency] = useState("INR"); // INR or USD
   const [billing, setBilling] = useState("Monthly"); // Monthly or Annual
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingPlan, setProcessingPlan] = useState(null);
 
   // Load Razorpay script
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function PricingPage({ onBack, onAuth }) {
       return;
     }
     if (plan.price === 0) return;
-    setIsProcessing(true);
+    setProcessingPlan(plan.name);
     try {
       const price = billing === "Annual" ? plan.annualPrice : plan.monthlyPrice;
       const { data: order } = await axios.post(`${API_BASE_URL}/payments/create-order`, {
@@ -71,7 +71,7 @@ export default function PricingPage({ onBack, onAuth }) {
       console.error(error);
       alert("Failed to initiate payment.");
     } finally {
-      setIsProcessing(false);
+      setProcessingPlan(null);
     }
   };
 
@@ -288,10 +288,10 @@ export default function PricingPage({ onBack, onAuth }) {
 
               <button 
                 onClick={() => handlePayment({ ...plan, monthlyPrice: plan.prices[currency].monthly, annualPrice: plan.prices[currency].annual })}
-                disabled={isProcessing}
-                className={`w-full py-2.5 rounded-lg text-sm transition-all text-center ${plan.ctaStyle}`}
+                disabled={processingPlan !== null}
+                className={`w-full py-2.5 rounded-lg text-sm transition-all text-center ${plan.ctaStyle} ${processingPlan === plan.name ? 'opacity-80 cursor-wait' : ''} ${processingPlan !== null && processingPlan !== plan.name ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {isProcessing ? "Processing..." : plan.cta}
+                {processingPlan === plan.name ? "Processing..." : plan.cta}
               </button>
             </div>
           ))}
