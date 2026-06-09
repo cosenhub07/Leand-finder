@@ -234,31 +234,32 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-    <div className="app-root">
+    <div className="min-h-screen bg-slate-950 text-slate-50 bg-[radial-gradient(circle_at_15%_50%,rgba(99,102,241,0.08),transparent_25%),radial-gradient(circle_at_85%_30%,rgba(236,72,153,0.08),transparent_25%)] bg-fixed flex flex-col">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <header className="app-header">
-        <div className="app-header-inner">
-          <div className="app-logo">
-            <object data="/icon.svg" type="image/svg+xml" aria-label="Lead Finder Icon" className="w-8 h-8 pointer-events-none"></object>
+      <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-white/10 h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <object data="/icon.svg" type="image/svg+xml" aria-label="Lead Finder Icon" className="w-7 h-7 sm:w-8 sm:h-8 pointer-events-none"></object>
             <div>
-              <h1 className="app-logo-title">Lead Finder <span className="app-logo-pro">PRO</span></h1>
-              <p className="app-logo-sub">AI-Powered Business Lead Generation</p>
+              <h1 className="font-inter text-sm sm:text-base font-bold text-white tracking-tight">Lead Finder <span className="text-[9px] sm:text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded-full ml-1 align-middle">PRO</span></h1>
+              <p className="text-[10px] sm:text-xs text-slate-400 hidden md:block mt-0.5">AI-Powered Business Lead Generation</p>
             </div>
           </div>
 
-          <div className="app-header-actions">
-            {savedMsg && <span className="saved-badge">{savedMsg}</span>}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {savedMsg && <span className="text-[10px] sm:text-xs text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 sm:px-3 py-1 rounded-full hidden sm:block animate-[fadeIn_0.3s_ease]">{savedMsg}</span>}
             <button
-              className="header-btn"
+              className="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center"
               onClick={() => setShowHistory((v) => !v)}
               title="Search History"
             >
-              📂 History
+              <span className="sm:hidden">📂</span>
+              <span className="hidden sm:inline">📂 History</span>
             </button>
-            <div className="user-badge">
-              <span className="user-avatar">{((user.name || user.email || "U")[0] || "U").toUpperCase()}</span>
-              <span className="user-name">{user.name || user.email || "User"}</span>
-              <button className="logout-btn" onClick={logout} title="Logout">↩</button>
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-800/80 border border-slate-700 rounded-lg p-1 sm:p-1 pr-1.5 sm:pr-2 h-8 sm:h-9">
+              <span className="w-6 h-6 sm:w-7 sm:h-7 bg-indigo-500/20 border border-indigo-500/30 rounded flex items-center justify-center text-[10px] sm:text-xs font-semibold text-indigo-300">{((user.name || user.email || "U")[0] || "U").toUpperCase()}</span>
+              <span className="text-xs sm:text-sm font-medium text-slate-300 max-w-[60px] sm:max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap hidden sm:block">{user.name || user.email || "User"}</span>
+              <button className="text-slate-500 hover:text-red-400 hover:bg-red-400/10 p-1 rounded transition-colors text-xs sm:text-sm flex items-center justify-center" onClick={logout} title="Logout">↩</button>
             </div>
           </div>
         </div>
@@ -277,7 +278,7 @@ export default function App() {
       )}
 
       {/* ── Main ────────────────────────────────────────────────────────────── */}
-      <main className="app-main">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col gap-4 sm:gap-6">
 
         {/* ── Tier Tabs ──────────────────────────────────────────────────────── */}
         <div className="tier-tabs">
@@ -409,8 +410,8 @@ export default function App() {
       </footer>
       {/* ── Settings Modal (BYOK) ────────────────────────────────────────────── */}
       {showSettingsModal && (
-        <div className="history-overlay" style={{ alignItems: "center", justifyContent: "center" }} onClick={() => setShowSettingsModal(false)}>
-          <div className="glass-card p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+        <div className="history-overlay p-4" style={{ alignItems: "center", justifyItems: "center", justifyContent: "center" }} onClick={() => setShowSettingsModal(false)}>
+          <div className="glass-card p-6 max-w-md w-full mx-auto" style={{ boxShadow: "0 24px 48px rgba(0,0,0,0.12)" }} onClick={(e) => e.stopPropagation()}>
             <h2 className="text-xl font-bold text-white mb-2">API Settings</h2>
             <p className="text-sm text-slate-400 mb-6">
               Enter your API keys to bypass the free limits and unlock 100 results per search. Keys are saved securely in your browser.

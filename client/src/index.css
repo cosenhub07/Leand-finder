@@ -869,6 +869,7 @@ body {
 /* ── Tier Tabs ──────────────────────────────────────────────────────────── */
 .tier-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   background: rgba(15, 15, 26, 0.6);
   padding: 6px;
