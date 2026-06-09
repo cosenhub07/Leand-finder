@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
-export default function PricingPage({ onBack }) {
+export default function PricingPage({ onBack, onAuth }) {
+  const { user } = useAuth();
   const [currency, setCurrency] = useState("INR"); // INR or USD
   const [billing, setBilling] = useState("Monthly"); // Monthly or Annual
   const [isProcessing, setIsProcessing] = useState(false);
@@ -18,6 +20,10 @@ export default function PricingPage({ onBack }) {
   }, []);
 
   const handlePayment = async (plan) => {
+    if (!user) {
+      if (onAuth) onAuth();
+      return;
+    }
     if (plan.price === 0) return;
     setIsProcessing(true);
     try {
@@ -36,15 +42,20 @@ export default function PricingPage({ onBack }) {
         order_id: order.id,
         handler: async (response) => {
           try {
-            await axios.post(`${API_BASE_URL}/payments/verify-payment`, response);
+            const verificationPayload = {
+              ...response,
+              user: { name: user.name, email: user.email },
+              plan: { name: plan.name, billing: billing }
+            };
+            await axios.post(`${API_BASE_URL}/payments/verify-payment`, verificationPayload);
             alert("Payment successful! Welcome to LeadFinder Pro.");
           } catch (err) {
             alert("Payment verification failed.");
           }
         },
         prefill: {
-          name: "Test User",
-          email: "test@example.com",
+          name: user?.name || "Test User",
+          email: user?.email || "test@example.com",
         },
         theme: {
           color: "#f97316", // orange accent
